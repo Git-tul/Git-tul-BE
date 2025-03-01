@@ -1,4 +1,4 @@
-src/main/resources/application-secret.yml
+**/application-secret.yml
 
 HELP.md
 .gradle
