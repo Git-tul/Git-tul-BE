@@ -1,4 +1,4 @@
-package io.gittul.gittulbe.domain.user.entity;
+package io.gittul.domain.user.entity;
 
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;

@@ -1,16 +1,11 @@
-package io.gittul.gittulbe.domain.user.entity;
+package io.gittul.domain.user.entity;
 
-import io.gittul.gittulbe.domain.post.comment.entity.Comment;
-import io.gittul.gittulbe.domain.post.comment.entity.UserLikeComment;
-import io.gittul.gittulbe.domain.post.entity.Post;
-import io.gittul.gittulbe.domain.post.entity.Tag;
-import io.gittul.gittulbe.domain.post.entity.UserLikePost;
-import io.gittul.gittulbe.global.EntityTimeStamp;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import io.gittul.domain.post.comment.entity.Comment;
+import io.gittul.domain.post.comment.entity.UserLikeComment;
+import io.gittul.domain.post.entity.Post;
+import io.gittul.domain.post.entity.Tag;
+import io.gittul.domain.post.entity.UserLikePost;
+import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -24,21 +19,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Entity
+@Embeddable
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends EntityTimeStamp {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
-
-    private String userName;
-    private String email;
-    private String password;
-
-    @Embedded
-    private OauthInfo oauthInfo;
+public class UserDetails {
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();

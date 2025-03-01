@@ -5,8 +5,14 @@ spring:
     hibernate:
       ddl-auto: none
       naming:
-        physical-strategy: io.gittul.gittulbe.config.UpperSnakeCaseNamingStrategy
+        physical-strategy: io.gittul.config.hibernate.UpperSnakeCaseNamingStrategy
     properties:
       hibernate:
         show_sql: true
         format_sql: true
+        highlight: true
+
+logging:
+  level:
+    org.hibernate.sql: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
