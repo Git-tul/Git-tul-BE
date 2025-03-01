@@ -1,10 +1,8 @@
-package io.gittul.gittulbe.global;
+package io.gittul.global.jpa;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -20,6 +18,4 @@ public abstract class EntityTimeStamp {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt = LocalDateTime.now();
-
-    private LocalDateTime deletedAt;
 }
