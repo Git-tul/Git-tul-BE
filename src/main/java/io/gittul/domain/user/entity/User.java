@@ -1,5 +1,7 @@
 package io.gittul.domain.user.entity;
 
+import io.gittul.domain.tag.entity.Tag;
+import io.gittul.domain.tag.entity.UserInterest;
 import io.gittul.global.jpa.EntityTimeStamp;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -32,7 +34,7 @@ public class User extends EntityTimeStamp {
 
     @Builder.Default
     @Embedded
-    private UserDetails userDetails = new UserDetails();
+    private UserDetails details = new UserDetails();
 
     public static User ofNormal(String userName, String email, String password) {
         return User.builder()
@@ -48,5 +50,16 @@ public class User extends EntityTimeStamp {
                 .email(email)
                 .oauthInfo(oauthInfo)
                 .build();
+    }
+
+    public void addInterest(Tag tag) {
+        UserInterest userInterest = new UserInterest(this, tag);
+        this.details.getInterests().add(userInterest);
+        tag.getInterests().add(userInterest);
+    }
+
+    public void removeInterest(Tag tag) {
+        this.details.getInterests().removeIf(userInterest -> userInterest.getTag().equals(tag));
+        tag.getInterests().removeIf(userInterest -> userInterest.getUser().equals(this));
     }
 }

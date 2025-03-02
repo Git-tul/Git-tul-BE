@@ -1,13 +1,13 @@
 package io.gittul.domain.user.entity;
 
-import io.gittul.domain.post.comment.entity.Comment;
-import io.gittul.domain.post.comment.entity.UserLikeComment;
+import io.gittul.domain.bookmark.entity.Bookmark;
+import io.gittul.domain.comment.entity.Comment;
+import io.gittul.domain.like.enriry.UserLikeComment;
+import io.gittul.domain.like.enriry.UserLikePost;
 import io.gittul.domain.post.entity.Post;
 import io.gittul.domain.tag.entity.UserInterest;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,26 +23,21 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserDetails {
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserLikePost> likedPosts = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserLikeComment> likedComments = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bookmark> bookmarks = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "USER_INTEREST",
-            joinColumns = @JoinColumn(name = "USER_ID"),
-            inverseJoinColumns = @JoinColumn(name = "TAG_ID")
-    )
-    private List<Tag> interests = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserInterest> interests = new ArrayList<>();
 }
