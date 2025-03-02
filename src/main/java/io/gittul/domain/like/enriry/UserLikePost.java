@@ -1,5 +1,6 @@
-package io.gittul.domain.post.entity;
+package io.gittul.domain.like.enriry;
 
+import io.gittul.domain.post.entity.Post;
 import io.gittul.domain.user.entity.User;
 import io.gittul.global.jpa.EntityTimeStamp;
 import jakarta.persistence.Entity;

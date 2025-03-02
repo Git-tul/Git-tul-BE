@@ -1,5 +1,8 @@
-package io.gittul.domain.post.entity;
+package io.gittul.domain.comment.entity;
 
+import io.gittul.domain.like.enriry.UserLikeComment;
+import io.gittul.domain.post.entity.Post;
+import io.gittul.domain.user.entity.User;
 import io.gittul.global.jpa.EntityTimeStamp;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,24 +10,32 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostTag extends EntityTimeStamp {
-
+public class Comment extends EntityTimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postTagId;
+    private Long commentId;
 
     @ManyToOne
     @JoinColumn(name = "POST_ID")
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "TAG_ID")
-    private Tag tag;
+    @JoinColumn(name = "USER_ID")
+    private User user;
+
+    private String content;
+
+    @OneToMany(mappedBy = "comment")
+    private List<UserLikeComment> likes = new ArrayList<>();
 }
