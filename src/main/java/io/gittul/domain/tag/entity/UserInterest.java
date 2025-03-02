@@ -27,4 +27,9 @@ public class UserInterest extends EntityTimeStamp {
     @ManyToOne
     @JoinColumn(name = "TAG_ID")
     private Tag tag;
+
+    public UserInterest(User user, Tag tag) {
+        this.user = user;
+        this.tag = tag;
+    }
 }
