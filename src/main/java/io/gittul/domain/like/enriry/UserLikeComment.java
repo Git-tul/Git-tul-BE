@@ -1,6 +1,7 @@
-package io.gittul.domain.user.entity;
+package io.gittul.domain.like.enriry;
 
-import io.gittul.domain.post.entity.Tag;
+import io.gittul.domain.comment.entity.Comment;
+import io.gittul.domain.user.entity.User;
 import io.gittul.global.jpa.EntityTimeStamp;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,16 +16,16 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserInterest extends EntityTimeStamp {
+public class UserLikeComment extends EntityTimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long interestId;
+    private Long likeId;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "TAG_ID")
-    private Tag tag;
+    @JoinColumn(name = "COMMENT_ID")
+    private Comment comment;
 }

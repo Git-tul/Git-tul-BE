@@ -1,4 +1,4 @@
-package io.gittul.domain.post.comment.entity;
+package io.gittul.domain.bookmark.entity;
 
 import io.gittul.domain.post.entity.Post;
 import io.gittul.domain.user.entity.User;
@@ -9,32 +9,23 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment extends EntityTimeStamp {
+public class Bookmark extends EntityTimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long commentId;
-
-    @ManyToOne
-    @JoinColumn(name = "POST_ID")
-    private Post post;
+    private Long bookmarkId;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    private String content;
-
-    @OneToMany(mappedBy = "comment")
-    private List<UserLikeComment> likes = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "POST_ID")
+    private Post post;
 }
