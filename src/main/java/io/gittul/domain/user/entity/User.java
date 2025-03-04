@@ -27,6 +27,7 @@ public class User extends EntityTimeStamp {
 
     private String userName;
     private String email;
+    private String profileImage;
     private String password;
 
     @Embedded
@@ -36,18 +37,26 @@ public class User extends EntityTimeStamp {
     @Embedded
     private UserDetails details = new UserDetails();
 
-    public static User ofNormal(String userName, String email, String password) {
+    public static User ofNormal(String userName,
+                                String email,
+                                String password,
+                                String profileImage) {
         return User.builder()
                 .userName(userName)
                 .email(email)
+                .profileImage(profileImage)
                 .password(password)
                 .build();
     }
 
-    public static User ofOauth(String userName, String email, OauthInfo oauthInfo) {
+    public static User ofOauth(String userName,
+                               String email,
+                               String profileImage,
+                               OauthInfo oauthInfo) {
         return User.builder()
                 .userName(userName)
                 .email(email)
+                .profileImage(profileImage)
                 .oauthInfo(oauthInfo)
                 .build();
     }

@@ -21,6 +21,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Entity
@@ -41,6 +42,9 @@ public class Post extends EntityTimeStamp {
 
     private String title;
     private String content;
+    private String imageUrl;
+
+    private int viewCount;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
@@ -54,19 +58,15 @@ public class Post extends EntityTimeStamp {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostTag> postTags = new ArrayList<>();
 
-    public static Post ofNormal(String title,
-                                String content) {
+    public static Post of(User user,
+                          String title,
+                          String content,
+                          String imageUrl) {
         Post post = new Post();
+        post.user = user;
         post.title = title;
         post.content = content;
-        return post;
-    }
-
-    public static Post ofRepository(String title,
-                                    String content,
-                                    GitHubRepository repository) {
-        Post post = ofNormal(title, content);
-        post.repository = repository;
+        post.imageUrl = imageUrl;
         return post;
     }
 
@@ -79,5 +79,30 @@ public class Post extends EntityTimeStamp {
     public void removeTag(Tag tag) {
         postTags.removeIf(postTag -> postTag.getTag().equals(tag));
         tag.getPostTags().removeIf(postTag -> postTag.getPost().equals(this));
+    }
+
+    public List<Tag> getTags() {
+        return postTags.stream()
+                .map(PostTag::getTag)
+                .toList();
+    }
+
+    public int getLikeCount() {
+        return likes.size();
+    }
+
+    public int getCommentCount() {
+        return comments.size();
+    }
+
+    public Comment getBestComment() {
+        return comments.stream()
+                .max(Comparator.comparingInt(Comment::getLikeCount))
+                .orElse(null);
+    }
+
+    public boolean isLikedBy(User user) {
+        return likes.stream()
+                .anyMatch(like -> like.getUser().getUserId().equals(user.getUserId()));
     }
 }

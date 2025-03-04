@@ -36,6 +36,17 @@ public class Comment extends EntityTimeStamp {
 
     private String content;
 
+    private String imageUrl;
+
     @OneToMany(mappedBy = "comment")
     private List<UserLikeComment> likes = new ArrayList<>();
+
+    public int getLikeCount() {
+        return likes.size();
+    }
+
+    public boolean isLikedBy(User user) {
+        return likes.stream()
+                .anyMatch(like -> like.getUser().getUserId().equals(user.getUserId()));
+    }
 }
