@@ -124,4 +124,9 @@ public class Post extends EntityTimeStamp {
         return likes.stream()
                 .anyMatch(like -> like.getUser().getUserId().equals(user.getUserId()));
     }
+
+    public boolean isBookmarkedBy(User requestingUser) {
+        return bookmarks.stream()
+                .anyMatch(bookmark -> bookmark.getUser().getUserId().equals(user.getUserId()));
+    }
 }
