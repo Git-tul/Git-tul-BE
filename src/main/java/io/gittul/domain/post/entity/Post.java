@@ -8,6 +8,7 @@ import io.gittul.domain.tag.entity.PostTag;
 import io.gittul.domain.tag.entity.Tag;
 import io.gittul.domain.user.entity.User;
 import io.gittul.global.jpa.EntityTimeStamp;
+import io.gittul.infra.ai.summery.dto.RepositorySummary;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -70,10 +71,28 @@ public class Post extends EntityTimeStamp {
         return post;
     }
 
+    public static Post of(User user,
+                          GitHubRepository repository,
+                          RepositorySummary summary
+    ) {
+        Post post = new Post();
+        post.user = user;
+        post.repository = repository;
+        post.title = summary.title();
+        post.content = summary.description();
+        post.addTag(summary.tags());
+
+        return post;
+    }
+
     public void addTag(Tag tag) {
         PostTag postTag = new PostTag(this, tag);
         postTags.add(postTag);
         tag.getPostTags().add(postTag);
+    }
+
+    public void addTag(List<Tag> tags) {
+        tags.forEach(this::addTag);
     }
 
     public void removeTag(Tag tag) {

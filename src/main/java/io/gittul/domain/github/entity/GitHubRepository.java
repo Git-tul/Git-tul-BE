@@ -28,4 +28,18 @@ public class GitHubRepository extends EntityTimeStamp {
     private Integer starCount;
 
     private Integer forkCount;
+
+    public static GitHubRepository of(String repoUrl,
+                                      String name,
+                                      String description,
+                                      Integer starCount,
+                                      Integer forkCount) {
+        GitHubRepository repository = new GitHubRepository();
+        repository.repoUrl = repoUrl;
+        repository.name = name;
+        repository.description = description;
+        repository.starCount = starCount;
+        repository.forkCount = forkCount;
+        return repository;
+    }
 }
