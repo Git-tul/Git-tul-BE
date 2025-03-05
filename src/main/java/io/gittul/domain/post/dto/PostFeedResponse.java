@@ -16,7 +16,7 @@ public record PostFeedResponse(
         String createdAt,
         String updatedAt,
         long id,
-        int startCount,
+        int starCount,
         int forkCount,
         int viewCount,
         int likeCount,
@@ -30,14 +30,14 @@ public record PostFeedResponse(
     // Todo. 명칭 수정 post -> thread
     public static PostFeedResponse ofAndTo(Post thread, User requestingUser) {
         // Todo. 일반 게시글인 경우 처리
-        int startCount;
+        int starCount;
         int forkCount;
 
         if (thread.getRepository() == null) {
-            startCount = 0;
+            starCount = 0;
             forkCount = 0;
         } else {
-            startCount = thread.getRepository().getStarCount();
+            starCount = thread.getRepository().getStarCount();
             forkCount = thread.getRepository().getForkCount();
         }
 
@@ -49,7 +49,7 @@ public record PostFeedResponse(
                 thread.getCreatedAt().toString(),
                 thread.getUpdatedAt().toString(),
                 thread.getPostId(),
-                startCount,
+                starCount,
                 forkCount,
                 thread.getViewCount(),
                 thread.getLikeCount(),
@@ -62,14 +62,14 @@ public record PostFeedResponse(
     }
 
     public static PostFeedResponse ofNew(Post thread) {
-        int startCount;
+        int starCount;
         int forkCount;
 
         if (thread.getRepository() == null) {
-            startCount = 0;
+            starCount = 0;
             forkCount = 0;
         } else {
-            startCount = thread.getRepository().getStarCount();
+            starCount = thread.getRepository().getStarCount();
             forkCount = thread.getRepository().getForkCount();
         }
 
@@ -81,7 +81,7 @@ public record PostFeedResponse(
                 thread.getCreatedAt().toString(),
                 thread.getUpdatedAt().toString(),
                 thread.getPostId(),
-                startCount,
+                starCount,
                 forkCount,
                 thread.getViewCount(),
                 thread.getLikeCount(),
