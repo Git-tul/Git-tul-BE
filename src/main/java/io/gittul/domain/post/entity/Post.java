@@ -73,6 +73,10 @@ public class Post extends EntityTimeStamp {
         return comments.size();
     }
 
+    public int getBookmarkCount() {
+        return bookmarks.size();
+    }
+
     public Comment getBestComment() {
         return comments.stream()
                 .max(Comparator.comparingInt(Comment::getLikeCount))
