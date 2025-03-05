@@ -51,7 +51,6 @@ public class GithubService {
 
     private GitHubRepository getOrCreateRepository(RepositoryInfo info) {
         RepositoryBasicInfoResponse basicInfo = info.basicInfo();
-        System.out.println(basicInfo.stars());
 
         return repository.findByRepoUrl(basicInfo.url())
                 .orElseGet(() -> repository.save(
