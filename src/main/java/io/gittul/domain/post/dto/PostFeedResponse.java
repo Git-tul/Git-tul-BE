@@ -86,7 +86,7 @@ public record PostFeedResponse(
                 thread.getViewCount(),
                 thread.getLikeCount(),
                 thread.getCommentCount(),
-                CommentResponse.ofAndTo(thread.getBestComment(), thread.getUser()),
+                thread.getBestComment() != null ? CommentResponse.ofAndTo(thread.getBestComment(), thread.getUser()) : null,
                 false,
                 false,
                 thread.getTags().stream().map(Tag::getTagName).toList()

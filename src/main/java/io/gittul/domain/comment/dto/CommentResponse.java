@@ -26,6 +26,8 @@ public record CommentResponse(
 ) {
     public static CommentResponse ofAndTo(Comment comment,
                                           User requestingUser) {
+        if (comment == null) return null;
+
         return new CommentResponse(
                 UserProfileResponse.of(comment.getUser()),
                 comment.getContent(),
