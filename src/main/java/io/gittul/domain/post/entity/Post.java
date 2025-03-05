@@ -3,7 +3,7 @@ package io.gittul.domain.post.entity;
 import io.gittul.domain.bookmark.entity.Bookmark;
 import io.gittul.domain.comment.entity.Comment;
 import io.gittul.domain.github.entity.GitHubRepository;
-import io.gittul.domain.like.enriry.UserLikePost;
+import io.gittul.domain.like.entity.UserLikePost;
 import io.gittul.domain.tag.entity.PostTag;
 import io.gittul.domain.tag.entity.Tag;
 import io.gittul.domain.user.entity.User;
