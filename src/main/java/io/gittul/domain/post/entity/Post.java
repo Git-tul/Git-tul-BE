@@ -59,51 +59,10 @@ public class Post extends EntityTimeStamp {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostTag> postTags = new ArrayList<>();
 
-    public static Post of(User user,
-                          String title,
-                          String content,
-                          String imageUrl) {
-        Post post = new Post();
-        post.user = user;
-        post.title = title;
-        post.content = content;
-        post.imageUrl = imageUrl;
-        return post;
-    }
-
-    public static Post of(User user,
-                          GitHubRepository repository,
-                          RepositorySummary summary
-    ) {
-        Post post = new Post();
-        post.user = user;
-        post.repository = repository;
-        post.title = summary.title();
-        post.content = summary.description();
-        post.addTag(summary.tags());
-
-        return post;
-    }
-
     public void addTag(Tag tag) {
         PostTag postTag = new PostTag(this, tag);
         postTags.add(postTag);
         tag.getPostTags().add(postTag);
-    }
-
-    public void addTag(List<Tag> tags) {
-        tags.forEach(this::addTag);
-    }
-
-    public void removeTag(Tag tag) {
-        postTags.removeIf(postTag -> postTag.getTag().equals(tag));
-        tag.getPostTags().removeIf(postTag -> postTag.getPost().equals(this));
-    }
-
-    public List<Tag> getTags() {
-        return postTags.stream()
-                .map(PostTag::getTag)
-                .toList();
     }
 
     public int getLikeCount() {
@@ -128,5 +87,45 @@ public class Post extends EntityTimeStamp {
     public boolean isBookmarkedBy(User requestingUser) {
         return bookmarks.stream()
                 .anyMatch(bookmark -> bookmark.getUser().getUserId().equals(user.getUserId()));
+    }
+
+    public static Post of(User user,
+                          String title,
+                          String content,
+                          String imageUrl) {
+        Post post = new Post();
+        post.user = user;
+        post.title = title;
+        post.content = content;
+        post.imageUrl = imageUrl;
+        return post;
+    }
+
+    public static Post of(User user,
+                          GitHubRepository repository,
+                          RepositorySummary summary
+    ) {
+        Post post = new Post();
+        post.user = user;
+        post.repository = repository;
+        post.title = summary.title();
+        post.content = summary.description();
+
+        return post;
+    }
+
+    public void addTag(List<Tag> tags) {
+        tags.forEach(this::addTag);
+    }
+
+    public void removeTag(Tag tag) {
+        postTags.removeIf(postTag -> postTag.getTag().equals(tag));
+        tag.getPostTags().removeIf(postTag -> postTag.getPost().equals(this));
+    }
+
+    public List<Tag> getTags() {
+        return postTags.stream()
+                .map(PostTag::getTag)
+                .toList();
     }
 }

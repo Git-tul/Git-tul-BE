@@ -10,17 +10,4 @@ public record RepositoryBasicInfoResponse(
         int stars,
         int forks
 ) {
-
-    public static RepositoryBasicInfoResponse of(TrendingRepositoryApiResponse trending) {
-        return new RepositoryBasicInfoResponse(
-                trending.author(),
-                trending.name(),
-                trending.avatar(),
-                trending.description(),
-                trending.url(),
-                trending.language(),
-                trending.stars(),
-                trending.forks()
-        );
-    }
 }
