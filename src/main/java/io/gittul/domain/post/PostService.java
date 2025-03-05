@@ -65,4 +65,10 @@ public class PostService {
         Post savedPost = postRepository.save(post);
         return PostFeedResponse.ofNew(savedPost);
     }
+
+    public PostFeedResponse getPost(User user, Long id) {
+        return postRepository.findById(id)
+                .map(post -> PostFeedResponse.ofAndTo(post, user))
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+    }
 }

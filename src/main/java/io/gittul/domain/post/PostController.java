@@ -5,6 +5,7 @@ import io.gittul.domain.user.entity.User;
 import io.gittul.infra.auth.aop.Authenticated;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,5 +23,10 @@ public class PostController {
     @GetMapping()
     public List<PostFeedResponse> getAllPosts(@Authenticated User user) {
         return postService.getAllPosts(user);
+    }
+
+    @GetMapping("/{id}")
+    public PostFeedResponse getPost(@Authenticated User user, @PathVariable Long id) {
+        return postService.getPost(user, id);
     }
 }
