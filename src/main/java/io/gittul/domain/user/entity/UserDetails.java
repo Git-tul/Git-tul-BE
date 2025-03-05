@@ -2,8 +2,8 @@ package io.gittul.domain.user.entity;
 
 import io.gittul.domain.bookmark.entity.Bookmark;
 import io.gittul.domain.comment.entity.Comment;
-import io.gittul.domain.like.enriry.UserLikeComment;
-import io.gittul.domain.like.enriry.UserLikePost;
+import io.gittul.domain.like.entity.UserLikeComment;
+import io.gittul.domain.like.entity.UserLikePost;
 import io.gittul.domain.post.entity.Post;
 import io.gittul.domain.tag.entity.UserInterest;
 import jakarta.persistence.CascadeType;

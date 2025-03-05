@@ -1,6 +1,6 @@
 package io.gittul.domain.comment.entity;
 
-import io.gittul.domain.like.enriry.UserLikeComment;
+import io.gittul.domain.like.entity.UserLikeComment;
 import io.gittul.domain.post.entity.Post;
 import io.gittul.domain.user.entity.User;
 import io.gittul.global.jpa.EntityTimeStamp;
