@@ -79,14 +79,14 @@ public class Post extends EntityTimeStamp {
                 .orElse(null);
     }
 
-    public boolean isLikedBy(User user) {
+    public boolean isLikedBy(User requestingUser) {
         return likes.stream()
-                .anyMatch(like -> like.getUser().getUserId().equals(user.getUserId()));
+                .anyMatch(like -> like.getUser().getUserId().equals(requestingUser.getUserId()));
     }
 
     public boolean isBookmarkedBy(User requestingUser) {
         return bookmarks.stream()
-                .anyMatch(bookmark -> bookmark.getUser().getUserId().equals(user.getUserId()));
+                .anyMatch(bookmark -> bookmark.getUser().getUserId().equals(requestingUser.getUserId()));
     }
 
     public static Post of(User user,
