@@ -6,6 +6,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
+// Todo. Sort 적용
+// Todo. Password embedded type 으로 통합 고려
 @Component
 public class PasswordEncoder {
 

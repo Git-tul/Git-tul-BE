@@ -31,7 +31,7 @@ public class AuthService {
     }
 
     public void signup(SignupRequest signupRequest) {
-        if(userRepository.existsByUserName(signupRequest.userName())) {
+        if (userRepository.existsByUserName(signupRequest.userName())) {
             throw UserException.USERNAME_ALREADY_EXISTS;
         }
 
@@ -42,6 +42,7 @@ public class AuthService {
         User user = User.ofNormal(
                 signupRequest.userName(),
                 signupRequest.email(),
+                "",  // Todo. 이미지 추가
                 passwordEncoder.encode(signupRequest.password())
         );
 

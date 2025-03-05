@@ -30,6 +30,7 @@ public class GithubService {
 
 
     public List<PostFeedResponse> getDailyTrendingRepositoriesSummery() {
+        // Todo. 병렬처리
         List<SummaryAndRepository> repositories = trendingApiService.getDailyTrendingRepositories().stream()
                 .map(repo -> apiService.getRepositoryInfo(repo.author(), repo.name()))
                 .map(Mono::block).filter(Objects::nonNull)
