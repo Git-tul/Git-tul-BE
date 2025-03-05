@@ -18,10 +18,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
-        String token = authService.login(loginRequest);
-        response.setHeader("Authorization", "Bearer " + token);
-        return ResponseEntity.ok("로그인 성공");
+    public String login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+        return authService.login(loginRequest);
     }
 
     @PostMapping("/signup")
