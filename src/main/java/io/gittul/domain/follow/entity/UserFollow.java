@@ -1,8 +1,9 @@
-package io.gittul.domain;
+package io.gittul.domain.follow.entity;
 
 import io.gittul.domain.user.entity.User;
 import io.gittul.global.jpa.EntityTimeStamp;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,11 +21,16 @@ public class UserFollow extends EntityTimeStamp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long followId;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FOLLOWER_ID")
     private User follower;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FOLLOWEE_ID")
     private User followee;
+
+    public UserFollow(User follower, User followee) {
+        this.follower = follower;
+        this.followee = followee;
+    }
 }

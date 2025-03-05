@@ -1,5 +1,6 @@
 package io.gittul.domain.user.entity;
 
+import io.gittul.domain.follow.entity.UserFollow;
 import io.gittul.domain.tag.entity.Tag;
 import io.gittul.domain.tag.entity.UserInterest;
 import io.gittul.global.jpa.EntityTimeStamp;
@@ -80,5 +81,21 @@ public class User extends EntityTimeStamp {
     public void removeInterest(Tag tag) {
         this.details.getInterests().removeIf(userInterest -> userInterest.getTag().equals(tag));
         tag.getInterests().removeIf(userInterest -> userInterest.getUser().equals(this));
+    }
+
+    public void follow(User followee) {
+        UserFollow userFollow = new UserFollow(this, followee);
+        this.details.getFollowings().add(userFollow);
+        followee.getDetails().getFollowers().add(userFollow);
+    }
+
+    public void unfollow(User followee) {
+        this.details.getFollowings().removeIf(userFollow -> userFollow.getFollowee().equals(followee));
+        followee.getDetails().getFollowers().removeIf(userFollow -> userFollow.getFollower().equals(this));
+    }
+
+    public boolean isFollowing(User user) {
+        return this.details.getFollowings().stream()
+                .anyMatch(follow -> follow.getFollowee().getUserId().equals(user.getUserId()));
     }
 }
