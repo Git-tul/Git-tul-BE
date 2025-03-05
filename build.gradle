@@ -13,7 +13,7 @@ java {
 repositories {
     mavenCentral()
     maven { url 'https://repo.spring.io/milestone' }
-    maven {url 'https://repo.spring.io/snapshot'}
+    maven { url 'https://repo.spring.io/snapshot' }
 }
 
 dependencies {
@@ -35,6 +35,8 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+
+    implementation 'de.svenkubiak:jBCrypt:0.4.1'
 
     // ai
     implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter:1.0.0-SNAPSHOT'

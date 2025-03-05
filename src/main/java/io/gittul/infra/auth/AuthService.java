@@ -1,6 +1,7 @@
 package io.gittul.infra.auth;
 
 import io.gittul.domain.user.UserRepository;
+import io.gittul.domain.user.entity.Role;
 import io.gittul.domain.user.entity.User;
 import io.gittul.domain.user.exception.UserException;
 import io.gittul.infra.auth.dto.LoginRequest;
@@ -16,14 +17,15 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
     public String login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.email())
                 .orElseThrow(() -> AuthenticationException.USER_NOT_FOUND);
 
-        if (!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
+        if (user.getRole() == Role.ADMIN) throw new AuthenticationException("관리자용 API 를 통해 로그인해 주세요");
+
+        if (user.getPassword().matches(loginRequest.password())) {
             throw AuthenticationException.WRONG_PASSWORD;
         }
 
@@ -43,7 +45,7 @@ public class AuthService {
                 signupRequest.userName(),
                 signupRequest.email(),
                 "",  // Todo. 이미지 추가
-                passwordEncoder.encode(signupRequest.password())
+                signupRequest.password()
         );
 
         userRepository.save(user);

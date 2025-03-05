@@ -1,5 +1,6 @@
 package io.gittul.infra.auth.jwt;
 
+import io.gittul.domain.user.entity.Role;
 import io.gittul.infra.auth.exception.AuthenticationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -32,6 +33,7 @@ public class JwtProvider {
                 .subject(userInfo.userName())
                 .claim("userId", userInfo.userId())
                 .claim("email", userInfo.email())
+                .claim("role", userInfo.role())
                 .issuedAt(now)
                 .expiration(accessExpiration)
                 .signWith(getKey(), Jwts.SIG.HS256)
@@ -62,7 +64,8 @@ public class JwtProvider {
         return new TokenUserInfo(
                 claims.get("userId", Long.class),
                 claims.getSubject(), // userName
-                claims.get("email", String.class)
+                claims.get("email", String.class),
+                claims.get("role", Role.class)
         );
     }
 

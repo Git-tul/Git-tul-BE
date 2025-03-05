@@ -28,10 +28,15 @@ public class User extends EntityTimeStamp {
     private String userName;
     private String email;
     private String profileImage;
-    private String password;
+
+    @Embedded
+    Password password;
 
     @Embedded
     private OauthInfo oauthInfo;
+
+    private Role role;
+
 
     @Builder.Default
     @Embedded
@@ -45,7 +50,8 @@ public class User extends EntityTimeStamp {
                 .userName(userName)
                 .email(email)
                 .profileImage(profileImage)
-                .password(password)
+                .password(new Password(password))
+                .role(Role.USER)
                 .build();
     }
 
@@ -58,6 +64,7 @@ public class User extends EntityTimeStamp {
                 .email(email)
                 .profileImage(profileImage)
                 .oauthInfo(oauthInfo)
+                .role(Role.USER)
                 .build();
     }
 
