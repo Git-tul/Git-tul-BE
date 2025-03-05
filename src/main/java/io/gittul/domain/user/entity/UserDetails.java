@@ -1,5 +1,6 @@
 package io.gittul.domain.user.entity;
 
+import io.gittul.domain.UserFollow;
 import io.gittul.domain.bookmark.entity.Bookmark;
 import io.gittul.domain.comment.entity.Comment;
 import io.gittul.domain.like.entity.UserLikeComment;
@@ -40,4 +41,14 @@ public class UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserInterest> interests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserFollow> followings = new HashSet<>();
+
+    @OneToMany(mappedBy = "followee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserFollow> followers = new HashSet<>();
+
+    public boolean isFollowing(User user) {
+        return followings.stream().anyMatch(follow -> follow.getFollowee().equals(user));
+    }
 }

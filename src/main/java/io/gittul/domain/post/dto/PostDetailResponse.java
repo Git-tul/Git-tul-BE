@@ -4,6 +4,7 @@ import io.gittul.domain.comment.dto.CommentResponse;
 import io.gittul.domain.post.entity.Post;
 import io.gittul.domain.tag.entity.Tag;
 import io.gittul.domain.user.dto.UserProfileResponse;
+import io.gittul.domain.user.entity.User;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -25,7 +26,7 @@ public record PostDetailResponse(
         List<String> tags,
         List<CommentResponse> comments
 ) {
-    public static PostDetailResponse of(Post post, boolean isFollowed, boolean isLiked, boolean isBookmarked) {
+    public static PostDetailResponse of(Post post, User requestingUser) {
         return new PostDetailResponse(
                 BigInteger.valueOf(post.getPostId()),
                 post.getTitle(),
@@ -34,9 +35,9 @@ public record PostDetailResponse(
                 post.getCreatedAt().toString(),
                 post.getUpdatedAt().toString(),
                 UserProfileResponse.of(post.getUser()),
-                isFollowed,
-                isLiked,
-                isBookmarked,
+                requestingUser.getDetails().isFollowing(post.getUser()),
+                post.isLikedBy(requestingUser),
+                post.isBookmarkedBy(requestingUser),
                 post.getLikeCount(),
                 post.getBookmarkCount(),
                 post.getViewCount(),

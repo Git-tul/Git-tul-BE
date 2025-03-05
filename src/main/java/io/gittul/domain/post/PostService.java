@@ -3,6 +3,7 @@ package io.gittul.domain.post;
 import io.gittul.domain.github.GitHubRepositoryRepository;
 import io.gittul.domain.github.entity.GitHubRepository;
 import io.gittul.domain.post.dto.NormalPostCreateRequest;
+import io.gittul.domain.post.dto.PostDetailResponse;
 import io.gittul.domain.post.dto.PostFeedResponse;
 import io.gittul.domain.post.entity.Post;
 import io.gittul.domain.tag.TagService;
@@ -66,9 +67,9 @@ public class PostService {
         return PostFeedResponse.ofNew(savedPost);
     }
 
-    public PostFeedResponse getPost(User user, Long id) {
+    public PostDetailResponse getPost(User user, Long id) {
         return postRepository.findById(id)
-                .map(post -> PostFeedResponse.ofAndTo(post, user))
+                .map(post -> PostDetailResponse.of(post, user))
                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
     }
 }

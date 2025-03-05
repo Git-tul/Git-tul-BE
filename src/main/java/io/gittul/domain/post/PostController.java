@@ -1,5 +1,6 @@
 package io.gittul.domain.post;
 
+import io.gittul.domain.post.dto.PostDetailResponse;
 import io.gittul.domain.post.dto.PostFeedResponse;
 import io.gittul.domain.user.entity.User;
 import io.gittul.infra.auth.aop.Authenticated;
@@ -26,7 +27,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public PostFeedResponse getPost(@Authenticated User user, @PathVariable Long id) {
+    public PostDetailResponse getPost(@Authenticated User user, @PathVariable Long id) {
         return postService.getPost(user, id);
     }
 }
