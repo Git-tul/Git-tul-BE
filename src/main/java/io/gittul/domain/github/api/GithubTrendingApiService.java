@@ -1,6 +1,7 @@
 package io.gittul.domain.github.api;
 
 import io.gittul.domain.github.api.dto.TrendingRepositoryApiResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -9,6 +10,7 @@ import reactor.netty.http.client.HttpClient;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class GithubTrendingApiService {
 
@@ -34,7 +36,7 @@ public class GithubTrendingApiService {
                 .retrieve()
                 .bodyToFlux(TrendingRepositoryApiResponse.class)
                 .collectList()
-                .doOnError(e -> System.err.println("API 호출 실패: " + e.getMessage()))
+                .doOnError(e -> log.error("API 호출 실패: " + e.getMessage()))
                 .onErrorResume(e -> Mono.just(List.of()));
     }
 

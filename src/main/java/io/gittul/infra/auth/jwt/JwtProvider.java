@@ -47,7 +47,6 @@ public class JwtProvider {
             if (e instanceof ExpiredJwtException) {
                 throw AuthenticationException.EXPIRED_TOKEN;
             }
-            e.printStackTrace();
             throw AuthenticationException.INVALID_TOKEN;
         }
     }
