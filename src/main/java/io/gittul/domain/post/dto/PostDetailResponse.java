@@ -35,7 +35,7 @@ public record PostDetailResponse(
                 post.getCreatedAt().toString(),
                 post.getUpdatedAt().toString(),
                 UserProfileResponse.of(post.getUser()),
-                requestingUser.getDetails().isFollowing(post.getUser()),
+                requestingUser.isFollowing(post.getUser()),
                 post.isLikedBy(requestingUser),
                 post.isBookmarkedBy(requestingUser),
                 post.getLikeCount(),
