@@ -7,6 +7,7 @@ import io.gittul.domain.github.api.dto.RepositoryInfo;
 import io.gittul.domain.github.entity.GitHubRepository;
 import io.gittul.domain.post.PostService;
 import io.gittul.domain.post.dto.PostFeedResponse;
+import io.gittul.domain.user.entity.User;
 import io.gittul.infra.ai.summery.SummaryService;
 import io.gittul.infra.ai.summery.dto.RepositorySummary;
 import io.gittul.infra.ai.summery.dto.SummaryAndRepository;
@@ -29,7 +30,7 @@ public class GithubService {
     private final PostService postService;
 
 
-    public List<PostFeedResponse> getDailyTrendingRepositoriesSummery() {
+    public List<PostFeedResponse> getDailyTrendingRepositoriesSummery(User admin) {
         // Todo. 병렬처리
         List<SummaryAndRepository> repositories = trendingApiService.getDailyTrendingRepositories().stream()
                 .map(repo -> apiService.getRepositoryInfo(repo.author(), repo.name()))
@@ -44,13 +45,13 @@ public class GithubService {
 
 
         return repositories.stream()
-                .map(repo -> postService.createPostFromSummary(repo.repository(), repo.summary()))
+                .map(repo -> postService.createPostFromSummary(repo.repository(), repo.summary(), admin))
                 .toList();
     }
 
-
     private GitHubRepository getOrCreateRepository(RepositoryInfo info) {
         RepositoryBasicInfoResponse basicInfo = info.basicInfo();
+        System.out.println(basicInfo.stars());
 
         return repository.findByRepoUrl(basicInfo.url())
                 .orElseGet(() -> repository.save(

@@ -54,9 +54,9 @@ public class PostService {
         return PostFeedResponse.ofNew(savedPost);
     }
 
-    public PostFeedResponse createPostFromSummary(GitHubRepository repository, RepositorySummary summary) {
+    public PostFeedResponse createPostFromSummary(GitHubRepository repository, RepositorySummary summary, User admin) {
         Post post = Post.of(
-                null,
+                admin,
                 repository,
                 summary
         );
