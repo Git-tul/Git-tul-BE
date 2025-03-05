@@ -39,8 +39,8 @@ public class User extends EntityTimeStamp {
 
     public static User ofNormal(String userName,
                                 String email,
-                                String password,
-                                String profileImage) {
+                                String profileImage,
+                                String password) {
         return User.builder()
                 .userName(userName)
                 .email(email)

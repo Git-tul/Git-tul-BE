@@ -1,5 +1,7 @@
 package io.gittul.infra.auth.aop;
 
+import io.gittul.domain.user.UserInquiryService;
+import io.gittul.domain.user.entity.User;
 import io.gittul.infra.auth.exception.AuthenticationException;
 import io.gittul.infra.auth.jwt.JwtProvider;
 import io.gittul.infra.auth.jwt.TokenUserInfo;
@@ -18,11 +20,12 @@ import java.util.Objects;
 public class JWTAuthenticator implements HandlerMethodArgumentResolver {
 
     private final JwtProvider jwtProvider;
+    private final UserInquiryService userService; // Todo. ThreadLocal로 변경 고려
 
     @Override
     public boolean supportsParameter(org.springframework.core.MethodParameter parameter) {
         return parameter.hasParameterAnnotation(Authenticated.class) &&
-                parameter.getParameterType().isAssignableFrom(TokenUserInfo.class);
+                parameter.getParameterType().isAssignableFrom(User.class);
     }
 
     @Override
@@ -33,9 +36,9 @@ public class JWTAuthenticator implements HandlerMethodArgumentResolver {
         HttpServletRequest request = Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class));
         String authorizationHeader = request.getHeader("Authorization");
         String token = extractToken(authorizationHeader);
-        System.out.println("Extracted token: " + token); // 디버깅용
 
-        return jwtProvider.validateToken(token);
+        TokenUserInfo tokenUserInfo = jwtProvider.validateToken(token);
+        return userService.getUserFromTokenInfo(tokenUserInfo);
     }
 
     private String extractToken(String token) {
