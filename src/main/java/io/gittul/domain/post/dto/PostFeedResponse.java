@@ -56,6 +56,38 @@ public record PostFeedResponse(
                 thread.getCommentCount(),
                 CommentResponse.ofAndTo(thread.getBestComment(), thread.getUser()),
                 thread.isLikedBy(requestingUser),
+                thread.isBookmarkedBy(requestingUser),
+                thread.getTags().stream().map(Tag::getTagName).toList()
+        );
+    }
+
+    public static PostFeedResponse ofNew(Post thread) {
+        int startCount;
+        int forkCount;
+
+        if (thread.getRepository() == null) {
+            startCount = 0;
+            forkCount = 0;
+        } else {
+            startCount = thread.getRepository().getStarCount();
+            forkCount = thread.getRepository().getForkCount();
+        }
+
+        return new PostFeedResponse(
+                UserProfileResponse.of(thread.getUser()),
+                thread.getTitle(),
+                thread.getImageUrl(),
+                thread.getContent(),
+                thread.getCreatedAt().toString(),
+                thread.getUpdatedAt().toString(),
+                thread.getPostId(),
+                startCount,
+                forkCount,
+                thread.getViewCount(),
+                thread.getLikeCount(),
+                thread.getCommentCount(),
+                CommentResponse.ofAndTo(thread.getBestComment(), thread.getUser()),
+                false,
                 false,
                 thread.getTags().stream().map(Tag::getTagName).toList()
         );

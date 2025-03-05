@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class GitHubApiService {
 
-    private final WebClient webClient;
+    private final WebClient webClient; // Todo. webflux 걷어내기 고려
 
     @Value("${github.token}")
     private String githubToken;

@@ -1,10 +1,11 @@
 package io.gittul.domain.github.api;
 
-import io.gittul.domain.github.GitHubRepositoryRepository;
 import io.gittul.domain.github.api.dto.TrendingRepositoryApiResponse;
-import io.gittul.domain.github.entity.GitHubRepository;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
 import java.util.List;
 
@@ -12,52 +13,32 @@ import java.util.List;
 public class GithubTrendingApiService {
 
     private final WebClient webClient;
-    private final GitHubRepositoryRepository gitHubRepository;
+    private static final String TRENDING_BASE_URL = "https://gtrend.yapie.me";
+    private static final String REPOSITORIES_PATH = "/repositories";
 
-
-    public GithubTrendingApiService(WebClient.Builder webClientBuilder,
-                                    GitHubRepositoryRepository gitHubRepository) {
-        String TRENDING_URL = "https://gtrend.yapie.me/repositories";
-        this.webClient = webClientBuilder.baseUrl(TRENDING_URL).build();
-        this.gitHubRepository = gitHubRepository;
+    // 생성자에서 WebClient 초기화
+    public GithubTrendingApiService(HttpClient httpClient) {
+        this.webClient = WebClient.builder()
+                .baseUrl(TRENDING_BASE_URL)
+                .defaultHeader("Accept", "application/json")
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .build();
     }
 
-    private List<GitHubRepository> getTrendingRepositories(String period) {
-        List<TrendingRepositoryApiResponse> trendingRepositories = webClient.get()
-                .uri(period)
+    private Mono<List<TrendingRepositoryApiResponse>> getTrendingRepositories(String period) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(REPOSITORIES_PATH)
+                        .queryParam("since", period)
+                        .build())
                 .retrieve()
                 .bodyToFlux(TrendingRepositoryApiResponse.class)
                 .collectList()
-                .block();
-
-        return trendingRepositories.stream()
-                .map(this::getOrCreateRepository)
-                .toList();
+                .doOnError(e -> System.err.println("API 호출 실패: " + e.getMessage()))
+                .onErrorResume(e -> Mono.just(List.of()));
     }
 
-    public List<GitHubRepository> getDailyTrendingRepositories() {
-        String DAILY_TRENDING_QUERY = "?since=daily";
-        return getTrendingRepositories(DAILY_TRENDING_QUERY);
-    }
-
-    public List<GitHubRepository> getWeeklyTrendingRepositories() {
-        String WEEKLY_TRENDING_QUERY = "?since=weekly";
-        return getTrendingRepositories(WEEKLY_TRENDING_QUERY);
-    }
-
-    public List<GitHubRepository> getMonthlyTrendingRepositories() {
-        String MONTHLY_TRENDING_QUERY = "?since=monthly";
-        return getTrendingRepositories(MONTHLY_TRENDING_QUERY);
-    }
-
-    private GitHubRepository getOrCreateRepository(TrendingRepositoryApiResponse response) {
-        return gitHubRepository.findByRepoUrl(response.url())
-                .orElseGet(() -> gitHubRepository.save(
-                        GitHubRepository.of(response.url(),
-                                response.name(),
-                                response.description(),
-                                response.stars(),
-                                response.forks()
-                        )));
+    public List<TrendingRepositoryApiResponse> getDailyTrendingRepositories() {
+        return getTrendingRepositories("daily").block();
     }
 }
