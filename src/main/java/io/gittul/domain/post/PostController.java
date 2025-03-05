@@ -30,4 +30,9 @@ public class PostController {
     public PostDetailResponse getPost(@Authenticated User user, @PathVariable Long id) {
         return postService.getPost(user, id);
     }
+
+    @GetMapping("/following")
+    public List<PostFeedResponse> getFollowingPosts(@Authenticated User user) {
+        return postService.getFollowingPosts(user);
+    }
 }

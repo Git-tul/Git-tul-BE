@@ -72,4 +72,14 @@ public class PostService {
                 .map(post -> PostDetailResponse.of(post, user))
                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
     }
+
+    public List<PostFeedResponse> getFollowingPosts(User user) {
+        List<Long> followingUserIds = user.getDetails().getFollowings().stream()
+                .map(follow -> follow.getFollowee().getUserId())
+                .toList();
+
+        return postRepository.findAllByUserUserIdIn(followingUserIds).stream()
+                .map(post -> PostFeedResponse.ofAndTo(post, user))
+                .collect(Collectors.toList());
+    }
 }
