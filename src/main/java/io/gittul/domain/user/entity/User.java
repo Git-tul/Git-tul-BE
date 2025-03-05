@@ -5,6 +5,8 @@ import io.gittul.domain.tag.entity.UserInterest;
 import io.gittul.global.jpa.EntityTimeStamp;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -35,6 +37,7 @@ public class User extends EntityTimeStamp {
     @Embedded
     private OauthInfo oauthInfo;
 
+    @Enumerated(EnumType.STRING)
     private Role role;
 
 
