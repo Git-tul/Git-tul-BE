@@ -29,49 +29,24 @@ public record PostFeedResponse(
 
     // Todo. 명칭 수정 post -> thread
     public static PostFeedResponse ofAndTo(Post thread, User requestingUser) {
-        // Todo. 일반 게시글인 경우 처리
-        int starCount;
-        int forkCount;
-
-        if (thread.getRepository() == null) {
-            starCount = 0;
-            forkCount = 0;
-        } else {
-            starCount = thread.getRepository().getStarCount();
-            forkCount = thread.getRepository().getForkCount();
-        }
-
-        return new PostFeedResponse(
-                UserProfileResponse.of(thread.getUser()),
-                thread.getTitle(),
-                thread.getImageUrl(),
-                thread.getContent(),
-                thread.getCreatedAt().toString(),
-                thread.getUpdatedAt().toString(),
-                thread.getPostId(),
-                starCount,
-                forkCount,
-                thread.getViewCount(),
-                thread.getLikeCount(),
-                thread.getCommentCount(),
-                CommentResponse.ofAndTo(thread.getBestComment(), thread.getUser()),
+        return createPostFeedResponse(
+                thread,
                 thread.isLikedBy(requestingUser),
-                thread.isBookmarkedBy(requestingUser),
-                thread.getTags().stream().map(Tag::getTagName).toList()
+                thread.isBookmarkedBy(requestingUser)
         );
     }
 
     public static PostFeedResponse ofNew(Post thread) {
-        int starCount;
-        int forkCount;
+        return createPostFeedResponse(thread, false, false);
+    }
 
-        if (thread.getRepository() == null) {
-            starCount = 0;
-            forkCount = 0;
-        } else {
-            starCount = thread.getRepository().getStarCount();
-            forkCount = thread.getRepository().getForkCount();
-        }
+    private static PostFeedResponse createPostFeedResponse(Post thread,
+                                                           boolean isLiked,
+                                                           boolean isBookmarked) {
+
+        CommentResponse bestCommentResponse = thread.getBestComment() != null
+                ? CommentResponse.ofAndTo(thread.getBestComment(), thread.getUser())
+                : null;
 
         return new PostFeedResponse(
                 UserProfileResponse.of(thread.getUser()),
@@ -81,14 +56,14 @@ public record PostFeedResponse(
                 thread.getCreatedAt().toString(),
                 thread.getUpdatedAt().toString(),
                 thread.getPostId(),
-                starCount,
-                forkCount,
+                thread.getRepository() != null ? thread.getRepository().getStarCount() : 0,
+                thread.getRepository() != null ? thread.getRepository().getForkCount() : 0, // Todo. 가독성 개선
                 thread.getViewCount(),
                 thread.getLikeCount(),
                 thread.getCommentCount(),
-                thread.getBestComment() != null ? CommentResponse.ofAndTo(thread.getBestComment(), thread.getUser()) : null,
-                false,
-                false,
+                bestCommentResponse,
+                isLiked,
+                isBookmarked,
                 thread.getTags().stream().map(Tag::getTagName).toList()
         );
     }
