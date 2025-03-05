@@ -47,7 +47,7 @@ public class JwtProvider {
             if (e instanceof ExpiredJwtException) {
                 throw AuthenticationException.EXPIRED_TOKEN;
             }
-
+            e.printStackTrace();
             throw AuthenticationException.INVALID_TOKEN;
         }
     }
@@ -59,13 +59,11 @@ public class JwtProvider {
                 .parseSignedClaims(token)
                 .getPayload();
 
-        System.out.println(claims);
-
         return new TokenUserInfo(
                 claims.get("userId", Long.class),
                 claims.getSubject(), // userName
                 claims.get("email", String.class),
-                claims.get("role", Role.class)
+                Role.valueOf(claims.get("role", String.class))
         );
     }
 

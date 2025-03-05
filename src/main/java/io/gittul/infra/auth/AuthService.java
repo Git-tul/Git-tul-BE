@@ -23,9 +23,9 @@ public class AuthService {
         User user = userRepository.findByEmail(loginRequest.email())
                 .orElseThrow(() -> AuthenticationException.USER_NOT_FOUND);
 
-        if (user.getRole() == Role.ADMIN) throw new AuthenticationException("관리자용 API 를 통해 로그인해 주세요");
+        if (user.getRole().equals(Role.ADMIN)) throw new AuthenticationException("관리자용 API 를 통해 로그인해 주세요");
 
-        if (user.getPassword().matches(loginRequest.password())) {
+        if (!user.getPassword().matches(loginRequest.password())) {
             throw AuthenticationException.WRONG_PASSWORD;
         }
 
