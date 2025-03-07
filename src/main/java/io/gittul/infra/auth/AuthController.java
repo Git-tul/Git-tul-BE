@@ -3,7 +3,7 @@ package io.gittul.infra.auth;
 import io.gittul.infra.auth.dto.LoginRequest;
 import io.gittul.infra.auth.dto.LoginSuccessResponse;
 import io.gittul.infra.auth.dto.SignupRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,12 +19,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public LoginSuccessResponse login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public LoginSuccessResponse login(@Valid @RequestBody LoginRequest loginRequest) {
         return new LoginSuccessResponse(authService.login(loginRequest));
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignupRequest signupRequest) {
+    public ResponseEntity<String> signup(@Valid @RequestBody SignupRequest signupRequest) {
         authService.signup(signupRequest);
         return ResponseEntity.ok("회원가입 성공");
     }
