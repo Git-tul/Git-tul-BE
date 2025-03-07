@@ -11,6 +11,7 @@ import io.gittul.global.jpa.EntityTimeStamp;
 import io.gittul.infra.ai.summery.dto.RepositorySummary;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -47,22 +48,21 @@ public class Post extends EntityTimeStamp {
 
     private int viewCount;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<UserLikePost> likes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<Bookmark> bookmarks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<PostTag> postTags = new ArrayList<>();
 
     public void addTag(Tag tag) {
         PostTag postTag = new PostTag(this, tag);
         postTags.add(postTag);
-        tag.getPostTags().add(postTag);
     }
 
     public int getLikeCount() {
@@ -124,7 +124,6 @@ public class Post extends EntityTimeStamp {
 
     public void removeTag(Tag tag) {
         postTags.removeIf(postTag -> postTag.getTag().equals(tag));
-        tag.getPostTags().removeIf(postTag -> postTag.getPost().equals(this));
     }
 
     public List<Tag> getTags() {

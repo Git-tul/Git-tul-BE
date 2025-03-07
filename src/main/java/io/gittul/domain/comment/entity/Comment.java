@@ -5,6 +5,7 @@ import io.gittul.domain.post.entity.Post;
 import io.gittul.domain.user.entity.User;
 import io.gittul.global.jpa.EntityTimeStamp;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,7 +39,7 @@ public class Comment extends EntityTimeStamp {
 
     private String imageUrl;
 
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
     private List<UserLikeComment> likes = new ArrayList<>();
 
     public int getLikeCount() {

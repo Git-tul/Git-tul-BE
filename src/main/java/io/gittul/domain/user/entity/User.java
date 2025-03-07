@@ -75,12 +75,10 @@ public class User extends EntityTimeStamp {
     public void addInterest(Tag tag) {
         UserInterest userInterest = new UserInterest(this, tag);
         this.details.getInterests().add(userInterest);
-        tag.getInterests().add(userInterest);
     }
 
     public void removeInterest(Tag tag) {
         this.details.getInterests().removeIf(userInterest -> userInterest.getTag().equals(tag));
-        tag.getInterests().removeIf(userInterest -> userInterest.getUser().equals(this));
     }
 
     public void follow(User followee) {
