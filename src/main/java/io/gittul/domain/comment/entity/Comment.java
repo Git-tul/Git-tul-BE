@@ -42,6 +42,18 @@ public class Comment extends EntityTimeStamp {
     @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
     private List<UserLikeComment> likes = new ArrayList<>();
 
+    public static Comment of(String content,
+                             String imageUrl,
+                             User user,
+                             Post post) {
+        Comment comment = new Comment();
+        comment.content = content;
+        comment.imageUrl = imageUrl;
+        comment.user = user;
+        comment.post = post;
+        return comment;
+    }
+
     public int getLikeCount() {
         return likes.size();
     }
