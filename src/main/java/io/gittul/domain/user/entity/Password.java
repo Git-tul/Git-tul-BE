@@ -49,7 +49,7 @@ public class Password {
     @Constraint(validatedBy = {})
 
     public @interface ValidPassword {
-        String message() default "비밀번호는 유효하지 않습니다.";
+        String message() default "비밀번호가 유효하지 않습니다.";
 
         Class<?>[] groups() default {};
 
