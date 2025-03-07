@@ -1,13 +1,11 @@
 package io.gittul.domain.post;
 
-import io.gittul.domain.github.GitHubRepositoryRepository;
 import io.gittul.domain.github.entity.GitHubRepository;
 import io.gittul.domain.post.dto.NormalPostCreateRequest;
 import io.gittul.domain.post.dto.PostDetailResponse;
 import io.gittul.domain.post.dto.PostFeedResponse;
 import io.gittul.domain.post.entity.Post;
 import io.gittul.domain.tag.TagService;
-import io.gittul.domain.user.UserInquiryService;
 import io.gittul.domain.user.entity.User;
 import io.gittul.infra.ai.summery.dto.RepositorySummary;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +19,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
 
-    private final UserInquiryService userInquiryService;
     private final PostRepository postRepository;
     private final TagService tagService;
-    private final GitHubRepositoryRepository gitHubRepositoryRepository;
 
     @Transactional(readOnly = true)
     public List<PostFeedResponse> getAllPosts(User user) {
-        return postRepository.findAll().stream()
+        return postRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(post -> PostFeedResponse.ofAndTo(post, user))
                 .collect(Collectors.toList());
     }
@@ -70,7 +66,7 @@ public class PostService {
                 .map(follow -> follow.getFollowee().getUserId())
                 .toList();
 
-        return postRepository.findAllByUserUserIdIn(followingUserIds).stream()
+        return postRepository.findAllByUserUserIdInOrderByCreatedAtDesc(followingUserIds).stream()
                 .map(post -> PostFeedResponse.ofAndTo(post, user))
                 .collect(Collectors.toList());
     }
