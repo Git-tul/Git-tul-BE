@@ -70,4 +70,15 @@ public class PostService {
                 .map(post -> PostFeedResponse.ofAndTo(post, user))
                 .collect(Collectors.toList());
     }
+
+    public void deletePost(User user, Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+
+        if (!post.getUser().getUserId().equals(user.getUserId())) {
+            throw new IllegalArgumentException("You can't delete other user's post");
+        }
+
+        postRepository.delete(post);
+    }
 }
