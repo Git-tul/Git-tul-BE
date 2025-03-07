@@ -1,14 +1,20 @@
 package io.gittul.domain.post.dto;
 
-import org.hibernate.validator.constraints.URL;
+import io.gittul.global.validation.OptionalURL;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
 public record NormalPostCreateRequest(
-        Long userId,
-        @URL String repoUrl,
+        @Size(min = 1, max = 30)
         String title,
+
+        @Size(min = 1, max = 200)
         String content,
+
+        @OptionalURL
+        String image,
+
         List<String> tags
 ) {
 }

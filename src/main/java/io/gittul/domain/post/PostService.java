@@ -10,7 +10,6 @@ import io.gittul.domain.tag.TagService;
 import io.gittul.domain.user.UserInquiryService;
 import io.gittul.domain.user.entity.User;
 import io.gittul.infra.ai.summery.dto.RepositorySummary;
-import io.gittul.infra.auth.jwt.TokenUserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,24 +34,17 @@ public class PostService {
     }
 
     @Transactional
-    public PostFeedResponse createPost(NormalPostCreateRequest request, TokenUserInfo currentUser) {
-        User user = userInquiryService.getUserFromTokenInfo(currentUser);
-
-        GitHubRepository repository = request.repoUrl() != null ?
-                gitHubRepositoryRepository.findByRepoUrl(request.repoUrl())
-                        .orElseThrow(() -> new IllegalArgumentException("Repository not found")) : null;
-
-
+    public PostDetailResponse createPost(NormalPostCreateRequest request, User currentUser) {
         Post post = Post.of(
-                user,
+                currentUser,
                 request.title(),
                 request.content(),
-                "" // Todo. 이미지 추가
+                request.image()
         );
         post.addTag(tagService.getOrCreate(request.tags()));
 
         Post savedPost = postRepository.save(post);
-        return PostFeedResponse.ofNew(savedPost);
+        return PostDetailResponse.of(savedPost, currentUser);
     }
 
     public PostFeedResponse createPostFromSummary(GitHubRepository repository, RepositorySummary summary, User admin) {
