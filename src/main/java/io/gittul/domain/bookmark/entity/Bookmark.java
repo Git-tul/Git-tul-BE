@@ -28,4 +28,11 @@ public class Bookmark extends EntityTimeStamp {
     @ManyToOne
     @JoinColumn(name = "POST_ID")
     private Post post;
+
+    public static Bookmark of(User user, Post post) {
+        Bookmark bookmark = new Bookmark();
+        bookmark.user = user;
+        bookmark.post = post;
+        return bookmark;
+    }
 }
