@@ -45,4 +45,13 @@ public class PostController {
                                          @Valid @RequestBody NormalPostCreateRequest request) {
         return postService.createPost(request, user);
     }
+    @PostMapping("/{id}/bookmark")
+    public void addBookmark(@Authenticated User user, @PathVariable Long id) {
+        bookmarkService.addBookmark(user, id);
+    }
+
+    @PostMapping("/{id}/unbookmark")
+    public void removeBookmark(@Authenticated User user, @PathVariable Long id) {
+        bookmarkService.removeBookmark(user, id);
+    }
 }
