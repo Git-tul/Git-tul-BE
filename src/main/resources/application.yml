@@ -8,7 +8,8 @@ spring:
         physical-strategy: io.gittul.config.hibernate.UpperSnakeCaseNamingStrategy
     properties:
       hibernate:
-        show_sql: true
+        default_batch_fetch_size: 1000
+        show_sql: false
         format_sql: true
         highlight: true
 
