@@ -31,7 +31,7 @@ public class GithubService {
 
 
     public List<PostFeedResponse> getDailyTrendingRepositoriesSummery(User admin) {
-        // Todo. 병렬처리
+        // Todo. 병렬처리 , 이미 등록된 레포 제외?
         List<SummaryAndRepository> repositories = trendingApiService.getDailyTrendingRepositories().stream()
                 .map(repo -> apiService.getRepositoryInfo(repo.author(), repo.name()))
                 .map(Mono::block).filter(Objects::nonNull)
