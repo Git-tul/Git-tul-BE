@@ -1,6 +1,7 @@
 package io.gittul.domain.like.entity;
 
 import io.gittul.domain.comment.entity.Comment;
+import io.gittul.domain.post.entity.Post;
 import io.gittul.domain.user.entity.User;
 import io.gittul.global.jpa.EntityTimeStamp;
 import jakarta.persistence.Entity;
@@ -28,4 +29,11 @@ public class UserLikeComment extends EntityTimeStamp {
     @ManyToOne
     @JoinColumn(name = "COMMENT_ID")
     private Comment comment;
+
+    public static UserLikeComment of(User user, Comment comment) {
+        UserLikeComment like = new UserLikeComment();
+        like.user = user;
+        like.comment = comment;
+        return like;
+    }
 }
