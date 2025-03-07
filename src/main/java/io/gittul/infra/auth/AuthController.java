@@ -1,6 +1,7 @@
 package io.gittul.infra.auth;
 
 import io.gittul.infra.auth.dto.LoginRequest;
+import io.gittul.infra.auth.dto.LoginSuccessResponse;
 import io.gittul.infra.auth.dto.SignupRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
-        return authService.login(loginRequest);
+    public LoginSuccessResponse login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+        return new LoginSuccessResponse(authService.login(loginRequest));
     }
 
     @PostMapping("/signup")
