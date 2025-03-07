@@ -28,4 +28,11 @@ public class UserLikePost extends EntityTimeStamp {
     @ManyToOne
     @JoinColumn(name = "POST_ID")
     private Post post;
+
+    public static UserLikePost of(User user, Post post) {
+        UserLikePost like = new UserLikePost();
+        like.user = user;
+        like.post = post;
+        return like;
+    }
 }

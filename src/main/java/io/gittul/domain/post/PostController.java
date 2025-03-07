@@ -45,6 +45,17 @@ public class PostController {
                                          @Valid @RequestBody NormalPostCreateRequest request) {
         return postService.createPost(request, user);
     }
+
+    @PostMapping("/{id}/like")
+    public void likePost(@Authenticated User user, @PathVariable Long id) {
+        likeService.likePost(user, id);
+    }
+
+    @PostMapping("/{id}/unlike")
+    public void unLikePost(@Authenticated User user, @PathVariable Long id) {
+        likeService.unLikePost(user, id);
+    }
+
     @PostMapping("/{id}/bookmark")
     public void addBookmark(@Authenticated User user, @PathVariable Long id) {
         bookmarkService.addBookmark(user, id);
