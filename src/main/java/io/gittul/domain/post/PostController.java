@@ -1,12 +1,16 @@
 package io.gittul.domain.post;
 
+import io.gittul.domain.post.dto.NormalPostCreateRequest;
 import io.gittul.domain.post.dto.PostDetailResponse;
 import io.gittul.domain.post.dto.PostFeedResponse;
 import io.gittul.domain.user.entity.User;
 import io.gittul.infra.auth.aop.Authenticated;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,5 +38,11 @@ public class PostController {
     @GetMapping("/following")
     public List<PostFeedResponse> getFollowingPosts(@Authenticated User user) {
         return postService.getFollowingPosts(user);
+    }
+
+    @PostMapping()
+    public PostDetailResponse createPost(@Authenticated User user,
+                                         @Valid @RequestBody NormalPostCreateRequest request) {
+        return postService.createPost(request, user);
     }
 }
