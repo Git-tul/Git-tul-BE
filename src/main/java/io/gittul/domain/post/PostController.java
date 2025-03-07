@@ -1,5 +1,7 @@
 package io.gittul.domain.post;
 
+import io.gittul.domain.bookmark.entity.BookmarkService;
+import io.gittul.domain.like.LikeService;
 import io.gittul.domain.post.dto.NormalPostCreateRequest;
 import io.gittul.domain.post.dto.PostDetailResponse;
 import io.gittul.domain.post.dto.PostFeedResponse;
@@ -7,6 +9,7 @@ import io.gittul.domain.user.entity.User;
 import io.gittul.infra.auth.aop.Authenticated;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +26,8 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final LikeService likeService;
+    private final BookmarkService bookmarkService;
 
     // Todo. 비로그인으로는 조회 못하나?
     @GetMapping()
@@ -45,6 +50,12 @@ public class PostController {
                                          @Valid @RequestBody NormalPostCreateRequest request) {
         return postService.createPost(request, user);
     }
+
+    @DeleteMapping("/{id}")
+    public void deletePost(@Authenticated User user, @PathVariable Long id) {
+        postService.deletePost(user, id);
+    }
+
 
     @PostMapping("/{id}/like")
     public void likePost(@Authenticated User user, @PathVariable Long id) {
