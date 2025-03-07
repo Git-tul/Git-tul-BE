@@ -7,8 +7,10 @@ import io.gittul.domain.post.dto.PostFeedResponse;
 import io.gittul.domain.post.entity.Post;
 import io.gittul.domain.tag.TagService;
 import io.gittul.domain.user.entity.User;
+import io.gittul.global.exception.CustomException;
 import io.gittul.infra.ai.summery.dto.RepositorySummary;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +60,7 @@ public class PostService {
     public PostDetailResponse getPost(User user, Long id) {
         return postRepository.findById(id)
                 .map(post -> PostDetailResponse.of(post, user))
-                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "글을 찾을 수 없습니다."));
     }
 
     public List<PostFeedResponse> getFollowingPosts(User user) {
@@ -73,10 +75,10 @@ public class PostService {
 
     public void deletePost(User user, Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "글을 찾을 수 없습니다."));
 
         if (!post.getUser().getUserId().equals(user.getUserId())) {
-            throw new IllegalArgumentException("You can't delete other user's post");
+            throw new CustomException(HttpStatus.FORBIDDEN, "글을 삭제할 권한이 없습니다.");
         }
 
         postRepository.delete(post);
