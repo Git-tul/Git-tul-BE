@@ -8,27 +8,31 @@ import io.gittul.domain.post.entity.Post;
 import io.gittul.domain.user.entity.User;
 import io.gittul.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentService {
 
     private final PostRepository postRepository;
 
-    public CommentResponse createComment(CommentCreateRequest request,
-                                         Long postId,
-                                         User user) {
+    @Transactional
+    public Comment createComment(CommentCreateRequest request,
+                                 Long postId,
+                                 User user) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
 
 
         Comment comment = Comment.of(request.content(), request.image(), user, post);
         post.getComments().add(comment);
-        postRepository.save(post);
+        postRepository.saveAndFlush(post);
 
-        return CommentResponse.ofAndTo(comment, user);
+        return comment;
     }
 
     public void deleteComment(User user, Long postId, Long id) {
