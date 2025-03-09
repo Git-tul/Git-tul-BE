@@ -14,8 +14,3 @@ spring:
         show_sql: false
         format_sql: true
         highlight: true
-
-logging:
-  level:
-    org.hibernate.sql: DEBUG
-    org.hibernate.type.descriptor.sql: TRACE
