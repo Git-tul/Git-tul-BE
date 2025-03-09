@@ -1,11 +1,10 @@
 package io.gittul.domain.post;
 
-import io.gittul.domain.bookmark.entity.BookmarkService;
-import io.gittul.domain.like.LikeService;
 import io.gittul.domain.post.dto.NormalPostCreateRequest;
 import io.gittul.domain.post.dto.PostDetailResponse;
 import io.gittul.domain.post.dto.PostFeedResponse;
 import io.gittul.domain.user.entity.User;
+import io.gittul.global.page.PageQuery;
 import io.gittul.infra.auth.aop.Authenticated;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,23 +25,18 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-    private final LikeService likeService;
-    private final BookmarkService bookmarkService;
 
-    // Todo. 비로그인으로는 조회 못하나?
+
     @GetMapping()
-    public List<PostFeedResponse> getAllPosts(@Authenticated User user) {
-        return postService.getAllPosts(user);
+    public List<PostFeedResponse> getAllPosts(@Authenticated User user,
+                                              PageQuery page) {
+        return postService.getAllPosts(user, page.toRequest());
     }
 
     @GetMapping("/{id}")
-    public PostDetailResponse getPost(@Authenticated User user, @PathVariable Long id) {
+    public PostDetailResponse getPost(@Authenticated User user,
+                                      @PathVariable Long id) {
         return postService.getPost(user, id);
-    }
-
-    @GetMapping("/following")
-    public List<PostFeedResponse> getFollowingPosts(@Authenticated User user) {
-        return postService.getFollowingPosts(user);
     }
 
     @PostMapping()
@@ -54,26 +48,5 @@ public class PostController {
     @DeleteMapping("/{id}")
     public void deletePost(@Authenticated User user, @PathVariable Long id) {
         postService.deletePost(user, id);
-    }
-
-
-    @PostMapping("/{id}/like")
-    public void likePost(@Authenticated User user, @PathVariable Long id) {
-        likeService.likePost(user, id);
-    }
-
-    @PostMapping("/{id}/unlike")
-    public void unLikePost(@Authenticated User user, @PathVariable Long id) {
-        likeService.unLikePost(user, id);
-    }
-
-    @PostMapping("/{id}/bookmark")
-    public void addBookmark(@Authenticated User user, @PathVariable Long id) {
-        bookmarkService.addBookmark(user, id);
-    }
-
-    @PostMapping("/{id}/unbookmark")
-    public void removeBookmark(@Authenticated User user, @PathVariable Long id) {
-        bookmarkService.removeBookmark(user, id);
     }
 }
