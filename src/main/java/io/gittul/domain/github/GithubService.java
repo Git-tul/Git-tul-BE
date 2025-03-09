@@ -14,6 +14,7 @@ import io.gittul.infra.ai.summery.dto.RepositorySummary;
 import io.gittul.infra.ai.summery.dto.SummaryAndRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +33,20 @@ public class GithubService {
     private final SummaryService summaryService;
     private final PostService postService;
 
+    public GitHubRepository saveRepository(RepositoryInfo info) {
+        RepositoryBasicInfoResponse basicInfo = info.basicInfo();
+
+        return repository.findByRepoUrl(basicInfo.url())
+                .orElseGet(() -> repository.save(
+                        GitHubRepository.of(basicInfo.url(),
+                                basicInfo.name(),
+                                basicInfo.description(),
+                                basicInfo.stars(),
+                                basicInfo.forks()
+                        )));
+    }
+
+    @Transactional
     public List<PostFeedResponse> getDailyTrendingRepositoriesSummery(User admin) {
         List<TrendingRepositoryApiResponse> trendingRepositories = trendingApiService.getDailyTrendingRepositories();
 
@@ -49,36 +64,15 @@ public class GithubService {
     }
 
 
-    public GitHubRepository saveRepository(RepositoryInfo info) {
-        RepositoryBasicInfoResponse basicInfo = info.basicInfo();
-
-        return repository.findByRepoUrl(basicInfo.url())
-                .orElseGet(() -> repository.save(
-                        GitHubRepository.of(basicInfo.url(),
-                                basicInfo.name(),
-                                basicInfo.description(),
-                                basicInfo.stars(),
-                                basicInfo.forks()
-                        )));
-    }
-
     // Todo. 시간 비교 필요
     private List<RepositoryInfo> getNewRepositoryInfos(List<TrendingRepositoryApiResponse> trendingRepositories) {
-        ExecutorService executor = Executors.newFixedThreadPool(10);
-        List<CompletableFuture<RepositoryInfo>> futures = trendingRepositories.stream()
-                .map(repo -> CompletableFuture.supplyAsync(() ->
-                        apiService.getRepositoryInfo(repo.author(), repo.name()).block(), executor))
-                .toList();
-
-        List<RepositoryInfo> result = futures.stream()
-                .map(CompletableFuture::join)
+        return trendingRepositories.parallelStream()
+                .map(repo -> apiService.getRepositoryInfo(repo.author(), repo.name()).block())
                 .filter(Objects::nonNull)
                 .filter(this::isNew)
                 .toList();
-
-        executor.shutdown();
-        return result;
     }
+
 
     private boolean isNew(RepositoryInfo info) {
         return repository.findByRepoUrl(info.basicInfo().url()).isEmpty();
