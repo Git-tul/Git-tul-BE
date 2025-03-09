@@ -25,7 +25,7 @@ public class FollowService {
         if (follower.getUserId().equals(followeeId)) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "자기 자신을 팔로우할 수 없습니다.");
         }
-        System.out.println(follower.isFollowing(followee));
+
         if (follower.isFollowing(followee)) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "이미 팔로우중인 유저입니다.");
         }
