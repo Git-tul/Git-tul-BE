@@ -1,13 +1,17 @@
 package io.gittul.domain.user;
 
 import io.gittul.domain.follow.FollowService;
+import io.gittul.domain.user.dto.UserDetailResponse;
 import io.gittul.domain.user.entity.User;
 import io.gittul.infra.auth.aop.Authenticated;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -35,5 +39,10 @@ public class UserController {
     @PostMapping("uninterest")
     public void uninterested(@Authenticated User user, @RequestBody String tag) {
         userService.unInterest(user, tag);
+    }
+
+    @GetMapping("/me")
+    public UserDetailResponse me(@Authenticated User user) {
+        return UserDetailResponse.of(user);
     }
 }
