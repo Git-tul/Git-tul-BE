@@ -19,3 +19,9 @@ logging:
   level:
     org.hibernate.sql: DEBUG
     org.hibernate.type.descriptor.sql: TRACE
+
+springdoc:
+  api-docs:
+    path: /docs/api
+  swagger-ui:
+    path: /docs/ui
