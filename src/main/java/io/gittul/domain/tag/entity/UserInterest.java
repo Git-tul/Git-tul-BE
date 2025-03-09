@@ -12,6 +12,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,5 +33,18 @@ public class UserInterest extends EntityTimeStamp {
     public UserInterest(User user, Tag tag) {
         this.user = user;
         this.tag = tag;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        UserInterest interest = (UserInterest) o;
+        return Objects.equals(user.getUserId(), interest.user.getUserId())
+                && Objects.equals(tag.getTagName(), interest.tag.getTagName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(user.getUserId(), tag.getTagName());
     }
 }

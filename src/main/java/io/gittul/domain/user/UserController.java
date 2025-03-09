@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
+
+    private final UserService userService;
     private final FollowService followService;
 
     @PostMapping("/follow")
@@ -23,5 +25,15 @@ public class UserController {
     @PostMapping("/unfollow")
     public void unfollow(@Authenticated User user, @RequestBody Long followeeId) {
         followService.unfollow(user, followeeId);
+    }
+
+    @PostMapping("interest")
+    public void interest(@Authenticated User user, @RequestBody List<String> tags) {
+        userService.interest(user, tags);
+    }
+
+    @PostMapping("uninterest")
+    public void uninterested(@Authenticated User user, @RequestBody String tag) {
+        userService.unInterest(user, tag);
     }
 }
