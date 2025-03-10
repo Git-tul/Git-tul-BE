@@ -31,5 +31,8 @@ COPY --from=build /app/build/libs/Git-tul-BE.jar /app/Git-tul-BE.jar
 # Expose the port the app runs on
 EXPOSE 8080
 
+# Set Tiemzone
+RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+
 # Run the application
 CMD ["java", "-jar", "Git-tul-BE.jar"]
