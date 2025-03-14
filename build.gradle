@@ -41,6 +41,8 @@ dependencies {
     // ai
     implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter:1.0.0-SNAPSHOT'
 
+    implementation 'com.slack.api:slack-api-client:1.30.0'
+
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.batch:spring-batch-test'
