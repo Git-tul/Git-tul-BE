@@ -49,10 +49,9 @@ public class SummaryService {
 
         try {
             String response = chatClient.call(prompt);
-            log.info(response);
+            log.debug(response);
             return objectMapper.readValue(response, RepositorySummary.class);
         } catch (Exception e) {
-            log.error("요약 생성 실패: {}", e.getMessage());
             throw new CustomException("레포지토리 요약 생성 실패: " + e.getMessage());
         }
     }
