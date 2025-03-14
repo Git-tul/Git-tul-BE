@@ -15,13 +15,16 @@ spring:
         format_sql: true
         highlight: true
 
-logging:
-  level:
-    org.hibernate.sql: DEBUG
-    org.hibernate.type.descriptor.sql: TRACE
-
 springdoc:
   api-docs:
     path: /docs/api
   swagger-ui:
     path: /docs/ui
+
+logging:
+  level:
+    org:
+      apache:
+        coyote:
+          http11:
+            Http11Processor: WARN
