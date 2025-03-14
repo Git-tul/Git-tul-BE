@@ -33,7 +33,7 @@ public class TagService {
                 .map(Tag::of)
                 .collect(Collectors.toList());
 
-        tagRepository.saveAll(newTags);
+        tagRepository.saveAllAndFlush(newTags);
 
         existingTags.addAll(newTags);
         return new ArrayList<>(existingTags);
