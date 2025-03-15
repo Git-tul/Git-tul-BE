@@ -32,7 +32,7 @@ COPY --from=build /app/build/libs/Git-tul-BE.jar /app/Git-tul-BE.jar
 EXPOSE 8080
 
 # Set Tiemzone
-RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime && echo "Asia/Seoul" > /etc/timezone
 
 # Run the application
-CMD ["java", "-jar", "Git-tul-BE.jar"]
+CMD ["java", "-Duser.timezone=Asia/Seoul", "-jar", "Git-tul-BE.jar"]
