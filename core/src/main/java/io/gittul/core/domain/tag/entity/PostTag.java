@@ -1,7 +1,7 @@
-package io.gittul.domain.tag.entity;
+package io.gittul.core.domain.tag.entity;
 
-import io.gittul.domain.post.entity.Post;
-import io.gittul.global.jpa.EntityTimeStamp;
+import io.gittul.core.domain.post.entity.Post;
+import io.gittul.core.global.jpa.EntityTimeStamp;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
