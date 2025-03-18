@@ -1,4 +1,4 @@
-package io.gittul.global;
+package io.gittul.core.global;
 
 public abstract class Time {
     public static final int SECOND = 1000;

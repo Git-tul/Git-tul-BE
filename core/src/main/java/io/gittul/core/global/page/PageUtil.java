@@ -1,4 +1,4 @@
-package io.gittul.global.page;
+package io.gittul.core.global.page;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
