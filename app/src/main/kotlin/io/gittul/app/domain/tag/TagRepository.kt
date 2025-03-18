@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface TagRepository : JpaRepository<Tag, Long> {
-    fun findAllByTagNameIn(tagNames: MutableList<String>): MutableSet<Tag>
+    fun findAllByTagNameIn(tagNames: List<String>): MutableSet<Tag>
 }
