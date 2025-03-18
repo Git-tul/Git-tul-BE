@@ -1,4 +1,4 @@
-package io.gittul.global.validation;
+package io.gittul.core.global.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

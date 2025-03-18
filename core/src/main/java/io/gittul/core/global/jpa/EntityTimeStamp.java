@@ -1,4 +1,4 @@
-package io.gittul.global.jpa;
+package io.gittul.core.global.jpa;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
