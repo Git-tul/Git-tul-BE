@@ -1,4 +1,4 @@
-package io.gittul.config.hibernate;
+package io.gittul.core.config.hibernate;
 
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.naming.PhysicalNamingStrategy;
