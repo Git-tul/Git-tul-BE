@@ -5,7 +5,7 @@ spring:
     hibernate:
       ddl-auto: none
       naming:
-        physical-strategy: io.gittul.config.hibernate.UpperSnakeCaseNamingStrategy
+        physical-strategy: io.gittul.core.config.hibernate.UpperSnakeCaseNamingStrategy
     properties:
       hibernate:
         jdbc:
