@@ -16,7 +16,7 @@ class TagService(
      * @param tagNames 태그 이름 리스트
      * @return 추가할 전체 태그
      */
-    fun getOrCreate(tagNames: MutableList<String>): List<Tag> {
+    fun getOrCreate(tagNames: List<String>): List<Tag> {
         val existingTags: MutableSet<Tag> = tagRepository.findAllByTagNameIn(tagNames)
 
         val existingTagNames = existingTags.stream()
