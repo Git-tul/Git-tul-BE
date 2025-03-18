@@ -1,7 +1,7 @@
-package io.gittul.domain.follow.entity;
+package io.gittul.core.domain.follow.entity;
 
-import io.gittul.domain.user.entity.User;
-import io.gittul.global.jpa.EntityTimeStamp;
+import io.gittul.core.domain.user.entity.User;
+import io.gittul.core.global.jpa.EntityTimeStamp;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;

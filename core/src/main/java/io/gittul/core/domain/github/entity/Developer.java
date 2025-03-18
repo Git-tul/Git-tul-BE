@@ -1,6 +1,6 @@
-package io.gittul.domain.github.entity;
+package io.gittul.core.domain.github.entity;
 
-import io.gittul.global.jpa.EntityTimeStamp;
+import io.gittul.core.global.jpa.EntityTimeStamp;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

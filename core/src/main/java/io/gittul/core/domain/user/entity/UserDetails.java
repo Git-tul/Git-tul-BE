@@ -1,12 +1,12 @@
-package io.gittul.domain.user.entity;
+package io.gittul.core.domain.user.entity;
 
-import io.gittul.domain.bookmark.entity.Bookmark;
-import io.gittul.domain.comment.entity.Comment;
-import io.gittul.domain.follow.entity.UserFollow;
-import io.gittul.domain.like.entity.UserLikeComment;
-import io.gittul.domain.like.entity.UserLikePost;
-import io.gittul.domain.post.entity.Post;
-import io.gittul.domain.tag.entity.UserInterest;
+import io.gittul.core.domain.bookmark.entity.Bookmark;
+import io.gittul.core.domain.comment.entity.Comment;
+import io.gittul.core.domain.follow.entity.UserFollow;
+import io.gittul.core.domain.like.entity.UserLikeComment;
+import io.gittul.core.domain.like.entity.UserLikePost;
+import io.gittul.core.domain.post.entity.Post;
+import io.gittul.core.domain.tag.entity.UserInterest;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.FetchType;

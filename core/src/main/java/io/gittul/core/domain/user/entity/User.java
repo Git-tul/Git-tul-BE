@@ -1,9 +1,9 @@
-package io.gittul.domain.user.entity;
+package io.gittul.core.domain.user.entity;
 
-import io.gittul.domain.follow.entity.UserFollow;
-import io.gittul.domain.tag.entity.Tag;
-import io.gittul.domain.tag.entity.UserInterest;
-import io.gittul.global.jpa.EntityTimeStamp;
+import io.gittul.core.domain.follow.entity.UserFollow;
+import io.gittul.core.domain.tag.entity.Tag;
+import io.gittul.core.domain.tag.entity.UserInterest;
+import io.gittul.core.global.jpa.EntityTimeStamp;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
