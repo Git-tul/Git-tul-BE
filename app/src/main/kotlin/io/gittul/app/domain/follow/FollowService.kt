@@ -2,7 +2,6 @@ package io.gittul.app.domain.follow
 
 import io.gittul.app.domain.user.UserRepository
 import io.gittul.app.domain.user.dto.UserProfileResponse
-import io.gittul.core.domain.follow.entity.UserFollow
 import io.gittul.core.domain.user.entity.User
 import io.gittul.core.global.exception.CustomException
 import jakarta.transaction.Transactional

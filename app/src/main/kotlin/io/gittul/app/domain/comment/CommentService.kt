@@ -3,7 +3,6 @@ package io.gittul.app.domain.comment
 import io.gittul.app.domain.comment.dto.CommentCreateRequest
 import io.gittul.app.domain.post.PostRepository
 import io.gittul.core.domain.comment.entity.Comment
-import io.gittul.core.domain.post.entity.Post
 import io.gittul.core.domain.user.entity.User
 import io.gittul.core.global.exception.CustomException
 import org.springframework.http.HttpStatus
