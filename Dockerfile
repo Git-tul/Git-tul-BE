@@ -9,24 +9,26 @@ WORKDIR /app
 COPY build.gradle settings.gradle /app/
 
 # Copy the gradle wrapper
-COPY gradlew /app/
+COPY build.gradle settings.gradle gradlew /app/
 COPY gradle /app/gradle
 
 # Download the dependencies
 RUN ./gradlew dependencies
 
 # Copy the rest of the application code
-COPY src /app/src
+COPY core /app/core
+COPY app /app/app
+
 
 # Build the application
-RUN ./gradlew build
+RUN ./gradlew :app:build
 
 # Stage 2: Create the runtime image
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the JAR file from the build stage
-COPY --from=build /app/build/libs/Git-tul-BE.jar /app/Git-tul-BE.jar
+COPY --from=build /app/app/build/libs/app-0.0.1-SNAPSHOT.jar /app/Git-tul-BE.jar
 
 # Expose the port the app runs on
 EXPOSE 8080

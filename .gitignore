@@ -1,5 +1,7 @@
 **/application-secret.yml
 
+**/.DS_Store
+
 HELP.md
 .gradle
 build/
