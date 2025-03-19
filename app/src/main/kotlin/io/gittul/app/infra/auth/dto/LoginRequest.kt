@@ -4,9 +4,9 @@ import io.gittul.core.domain.user.entity.Password.ValidPassword
 import jakarta.validation.constraints.Email
 
 data class LoginRequest(
-    @Email
+    @field:Email
     val email: String,
 
-    @ValidPassword
+    @field:ValidPassword
     val password: String
 )
