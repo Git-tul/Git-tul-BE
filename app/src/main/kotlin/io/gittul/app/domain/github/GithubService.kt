@@ -31,7 +31,7 @@ class GithubService(
 
         return repository.findByRepoUrl(basicInfo.url)
             .orElseGet(Supplier {
-                repository.save<GitHubRepository?>(
+                repository.save<GitHubRepository>(
                     GitHubRepository.of(
                         basicInfo.url,
                         basicInfo.name,
@@ -44,20 +44,20 @@ class GithubService(
     }
 
     @Transactional
-    fun getDailyTrendingRepositoriesSummery(admin: User): MutableList<PostFeedResponse?> {
+    fun getDailyTrendingRepositoriesSummery(admin: User): MutableList<PostFeedResponse> {
         val trendingRepositories: List<TrendingRepositoryApiResponse> =
             trendingApiService.dailyTrendingRepositories
 
         val newRepositories = getNewRepositoryInfos(trendingRepositories).parallelStream()
-            .map<SummaryAndRepository?> { info: RepositoryInfo? ->
-                val repository = saveRepository(info!!)
-                val summary = summaryService.generateSummary(info)
+            .map<SummaryAndRepository> {
+                val repository = saveRepository(it)
+                val summary = summaryService.generateSummary(it)
                 SummaryAndRepository(summary, repository)
             }
             .toList()
 
         return newRepositories.stream() // Note. 병렬처리시 tag getOrSave 에서 유니크 제약 조건 에러 발생 가능성
-            .map<PostFeedResponse?> {
+            .map<PostFeedResponse> {
                 postService.createPostFromSummary(
                     it.repository,
                     it.summary,
@@ -71,7 +71,7 @@ class GithubService(
     // Todo. 시간 비교 필요
     private fun getNewRepositoryInfos(trendingRepositories: List<TrendingRepositoryApiResponse>): List<RepositoryInfo> {
         return trendingRepositories.parallelStream()
-            .map<RepositoryInfo?> {
+            .map<RepositoryInfo> {
                 apiService.getRepositoryInfo(
                     it.author,
                     it.name

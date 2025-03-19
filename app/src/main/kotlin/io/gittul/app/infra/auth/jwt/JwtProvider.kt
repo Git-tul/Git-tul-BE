@@ -22,7 +22,7 @@ class JwtProvider {
     /**
      * JWT 토큰 생성
      */
-    fun createToken(userInfo: TokenUserInfo): String? {
+    fun createToken(userInfo: TokenUserInfo): String {
         val now = Date()
         val accessExpiration = Date(now.time + this.expirationTime)
 
@@ -37,7 +37,7 @@ class JwtProvider {
             .compact()
     }
 
-    fun validateToken(token: String?): TokenUserInfo {
+    fun validateToken(token: String): TokenUserInfo {
         try {
             return parseToken(token)
         } catch (e: Exception) {
@@ -48,7 +48,7 @@ class JwtProvider {
         }
     }
 
-    private fun parseToken(token: String?): TokenUserInfo {
+    private fun parseToken(token: String): TokenUserInfo {
         val claims = Jwts.parser()
             .verifyWith(this.key)
             .build()
@@ -56,10 +56,10 @@ class JwtProvider {
             .getPayload()
 
         return TokenUserInfo(
-            claims.get<Long?>("userId", Long::class.java),
+            claims.get<Long>("userId", Long::class.java),
             claims.subject,  // userName
-            claims.get<String?>("email", String::class.java),
-            Role.valueOf(claims.get<String?>("role", String::class.java))
+            claims.get<String>("email", String::class.java),
+            Role.valueOf(claims.get<String>("role", String::class.java))
         )
     }
 
