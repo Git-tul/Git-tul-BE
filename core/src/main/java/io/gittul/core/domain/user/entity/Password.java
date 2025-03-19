@@ -32,7 +32,7 @@ public class Password {
 
         return BCrypt.checkpw(password, this.password);
     }
-    
+
     public static final String CONTAINS_SPECIAL_CHAR = "^(?=.*[!@#$%^&*(),.?\":{}|<>]).+$";
     public static final String CONTAINS_UPPERCASE = "^(?=.*[A-Z]).+$";
     public static final String CONTAINS_LOWERCASE = "^(?=.*[a-z]).+$";
@@ -47,7 +47,6 @@ public class Password {
     @Target({ElementType.FIELD, ElementType.PARAMETER})
     @Retention(RetentionPolicy.RUNTIME)
     @Constraint(validatedBy = {})
-
     public @interface ValidPassword {
         String message() default "비밀번호가 유효하지 않습니다.";
 

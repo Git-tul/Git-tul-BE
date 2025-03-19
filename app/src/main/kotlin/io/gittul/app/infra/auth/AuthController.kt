@@ -4,7 +4,6 @@ import io.gittul.app.infra.auth.dto.LoginRequest
 import io.gittul.app.infra.auth.dto.LoginSuccessResponse
 import io.gittul.app.infra.auth.dto.SignupRequest
 import jakarta.validation.Valid
-import lombok.RequiredArgsConstructor
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -18,12 +17,12 @@ class AuthController(
 ) {
 
     @PostMapping("/login")
-    fun login(@RequestBody loginRequest: @Valid LoginRequest): LoginSuccessResponse {
+    fun login(@Valid @RequestBody loginRequest: LoginRequest): LoginSuccessResponse {
         return LoginSuccessResponse(authService.login(loginRequest))
     }
 
     @PostMapping("/signup")
-    fun signup(@RequestBody signupRequest: @Valid SignupRequest): ResponseEntity<String> {
+    fun signup(@Valid @RequestBody signupRequest: SignupRequest): ResponseEntity<String> {
         authService.signup(signupRequest)
         return ResponseEntity.ok<String?>("회원가입 성공")
     }

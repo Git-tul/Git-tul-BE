@@ -6,9 +6,9 @@ import jakarta.validation.constraints.Email
 data class SignupRequest(
     val userName: String,
 
-    @Email
+    @field:Email
     val email: String,
 
-    @ValidPassword
+    @field:ValidPassword
     val password: String
 )
