@@ -3,7 +3,6 @@ package io.gittul.app.infra.auth.aop
 import io.gittul.app.infra.auth.exception.AuthorizationException
 import io.gittul.app.infra.auth.jwt.JwtAuthenticator
 import io.gittul.core.domain.user.entity.Role
-import lombok.RequiredArgsConstructor
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Before
 import org.aspectj.lang.annotation.Pointcut

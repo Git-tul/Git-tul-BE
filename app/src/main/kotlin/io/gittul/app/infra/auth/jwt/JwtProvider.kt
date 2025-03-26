@@ -33,7 +33,7 @@ class JwtProvider {
             .claim("role", userInfo.role)
             .issuedAt(now)
             .expiration(accessExpiration)
-            .signWith<SecretKey>(this.key, Jwts.SIG.HS256)
+            .signWith(this.key, Jwts.SIG.HS256)
             .compact()
     }
 

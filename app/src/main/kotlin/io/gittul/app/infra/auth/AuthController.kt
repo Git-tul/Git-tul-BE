@@ -24,6 +24,7 @@ class AuthController(
     @PostMapping("/signup")
     fun signup(@Valid @RequestBody signupRequest: SignupRequest): ResponseEntity<String> {
         authService.signup(signupRequest)
-        return ResponseEntity.ok<String?>("회원가입 성공")
+        return ResponseEntity.ok("회원가입 성공")
+    }
     }
 }
