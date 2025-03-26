@@ -12,7 +12,6 @@ import io.gittul.core.domain.post.entity.Post
 import io.gittul.core.domain.user.entity.User
 import io.gittul.core.global.exception.CustomException
 import io.gittul.core.global.page.PageUtil
-import lombok.RequiredArgsConstructor
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -21,7 +20,6 @@ import java.util.function.Supplier
 import java.util.stream.Collectors
 
 @Service
-@RequiredArgsConstructor
 class PostService(
     private val postRepository: PostRepository,
     private val tagService: TagService
@@ -31,7 +29,7 @@ class PostService(
     fun getAllPosts(user: User, page: PageRequest): List<PostFeedResponse> {
         val posts = postRepository.findAllByOrderByCreatedAtDesc(page)
         return posts.stream()
-            .map<PostFeedResponse> { PostFeedResponse.ofAndTo(it, user) }
+            .map { PostFeedResponse.ofAndTo(it, user) }
             .collect(Collectors.toList())
     }
 

@@ -10,28 +10,25 @@ import io.gittul.app.infra.ai.summery.SummaryService
 import io.gittul.app.infra.ai.summery.dto.SummaryAndRepository
 import io.gittul.core.domain.github.entity.GitHubRepository
 import io.gittul.core.domain.user.entity.User
-import lombok.RequiredArgsConstructor
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
-import java.util.function.Supplier
 
 @Service
-@RequiredArgsConstructor
 class GithubService(
     private val apiService: GitHubApiService,
     private val trendingApiService: GithubTrendingApiService,
-    private val repository: GitHubRepositoryRepository,
     private val summaryService: SummaryService,
-    private val postService: PostService
+    private val postService: PostService,
+    private val repository: GitHubRepositoryRepository
 ) {
 
     fun saveRepository(info: RepositoryInfo): GitHubRepository {
         val basicInfo = info.basicInfo
 
         return repository.findByRepoUrl(basicInfo.url)
-            .orElseGet(Supplier {
-                repository.save<GitHubRepository>(
+            .orElseGet {
+                repository.save(
                     GitHubRepository.of(
                         basicInfo.url,
                         basicInfo.name,
@@ -40,7 +37,7 @@ class GithubService(
                         basicInfo.forks
                     )
                 )
-            })
+            }
     }
 
     @Transactional
@@ -49,15 +46,15 @@ class GithubService(
             trendingApiService.dailyTrendingRepositories
 
         val newRepositories = getNewRepositoryInfos(trendingRepositories).parallelStream()
-            .map<SummaryAndRepository> {
+            .map {
                 val repository = saveRepository(it)
                 val summary = summaryService.generateSummary(it)
                 SummaryAndRepository(summary, repository)
             }
             .toList()
 
-        return newRepositories.stream() // Note. 병렬처리시 tag getOrSave 에서 유니크 제약 조건 에러 발생 가능성
-            .map<PostFeedResponse> {
+        return newRepositories.stream() // Note. 병렬 처리 시 태그 유니크 제약 조건 에러 가능성 주의
+            .map {
                 postService.createPostFromSummary(
                     it.repository,
                     it.summary,
@@ -67,21 +64,18 @@ class GithubService(
             .toList()
     }
 
-
-    // Todo. 시간 비교 필요
     private fun getNewRepositoryInfos(trendingRepositories: List<TrendingRepositoryApiResponse>): List<RepositoryInfo> {
         return trendingRepositories.parallelStream()
-            .map<RepositoryInfo> {
+            .map {
                 apiService.getRepositoryInfo(
                     it.author,
                     it.name
-                ).block()
+                )
             }
             .filter { Objects.nonNull(it) }
             .filter { this.isNew(it) }
             .toList()
     }
-
 
     private fun isNew(info: RepositoryInfo): Boolean {
         return repository.findByRepoUrl(info.basicInfo.url).isEmpty

@@ -1,7 +1,6 @@
 package io.gittul.app.domain.tag
 
 import io.gittul.core.domain.tag.entity.Tag
-import lombok.RequiredArgsConstructor
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 
