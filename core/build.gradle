@@ -1,4 +1,9 @@
 dependencies {
+    // lombok
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+
+    implementation("de.svenkubiak:jBCrypt:0.4.1")
 }
 
 jar {
