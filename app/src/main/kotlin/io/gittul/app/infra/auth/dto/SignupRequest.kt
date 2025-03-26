@@ -1,6 +1,7 @@
 package io.gittul.app.infra.auth.dto
 
 import io.gittul.core.domain.user.entity.Password.ValidPassword
+import io.gittul.core.global.validation.OptionalURL
 import jakarta.validation.constraints.Email
 
 data class SignupRequest(
@@ -10,5 +11,8 @@ data class SignupRequest(
     val email: String,
 
     @field:ValidPassword
-    val password: String
+    val password: String,
+
+    @field:OptionalURL
+    val profileImage: String
 )
