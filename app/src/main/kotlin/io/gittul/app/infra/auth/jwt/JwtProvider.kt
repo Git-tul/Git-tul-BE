@@ -1,7 +1,7 @@
 package io.gittul.app.infra.auth.jwt
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.gittul.app.infra.auth.exception.AuthenticationException
-import io.gittul.core.domain.user.entity.Role
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
@@ -11,7 +11,9 @@ import java.util.*
 import javax.crypto.SecretKey
 
 @Component
-class JwtProvider {
+class JwtProvider(
+    private val objectMapper: ObjectMapper = ObjectMapper()
+) {
     @Value("\${jwt.secret}")
     private val secretKey: String? = null
 
@@ -26,11 +28,10 @@ class JwtProvider {
         val now = Date()
         val accessExpiration = Date(now.time + this.expirationTime)
 
+        val userInfoJson: String = objectMapper.writeValueAsString(userInfo)
+
         return Jwts.builder()
-            .subject(userInfo.userName)
-            .claim("userId", userInfo.userId)
-            .claim("email", userInfo.email)
-            .claim("role", userInfo.role)
+            .claim("userInfo", userInfoJson)
             .issuedAt(now)
             .expiration(accessExpiration)
             .signWith(this.key, Jwts.SIG.HS256)
@@ -41,6 +42,7 @@ class JwtProvider {
         try {
             return parseToken(token)
         } catch (e: Exception) {
+            println(e)
             if (e is ExpiredJwtException) {
                 throw AuthenticationException.EXPIRED_TOKEN
             }
@@ -53,14 +55,10 @@ class JwtProvider {
             .verifyWith(this.key)
             .build()
             .parseSignedClaims(token)
-            .getPayload()
+            .payload
 
-        return TokenUserInfo(
-            claims.get<Long>("userId", Long::class.java),
-            claims.subject,  // userName
-            claims.get<String>("email", String::class.java),
-            Role.valueOf(claims.get<String>("role", String::class.java))
-        )
+        val userInfoJson: String = claims.get("userInfo", String::class.java)
+        return objectMapper.readValue(userInfoJson, TokenUserInfo::class.java)
     }
 
     private val key: SecretKey
