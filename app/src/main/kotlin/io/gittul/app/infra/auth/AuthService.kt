@@ -9,7 +9,9 @@ import io.gittul.app.infra.auth.jwt.JwtProvider
 import io.gittul.app.infra.auth.jwt.TokenUserInfo
 import io.gittul.core.domain.user.entity.Role
 import io.gittul.core.domain.user.entity.User
+import io.gittul.core.global.exception.CustomException
 import org.springframework.stereotype.Service
+import kotlin.jvm.optionals.getOrElse
 
 @Service
 class AuthService(
@@ -25,7 +27,7 @@ class AuthService(
             "관리자용 API 를 통해 로그인해 주세요"
         )
 
-        if (!user.getPassword().matches(loginRequest.password)) {
+        if (!user.password.matches(loginRequest.password)) {
             throw AuthenticationException.WRONG_PASSWORD
         }
 
@@ -44,7 +46,7 @@ class AuthService(
         val user = User.ofNormal(
             signupRequest.userName,
             signupRequest.email,
-            "",  // Todo. 이미지 추가
+            signupRequest.profileImage,
             signupRequest.password
         )
 
