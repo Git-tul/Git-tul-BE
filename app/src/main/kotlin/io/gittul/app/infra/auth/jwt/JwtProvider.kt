@@ -1,6 +1,7 @@
 package io.gittul.app.infra.auth.jwt
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.gittul.app.global.logger
 import io.gittul.app.infra.auth.exception.AuthenticationException
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
@@ -42,11 +43,12 @@ class JwtProvider(
         try {
             return parseToken(token)
         } catch (e: Exception) {
-            println(e)
             if (e is ExpiredJwtException) {
                 throw AuthenticationException.EXPIRED_TOKEN
+            } else {
+                logger().error("[인증]", e)
+                throw AuthenticationException.INVALID_TOKEN
             }
-            throw AuthenticationException.INVALID_TOKEN
         }
     }
 
