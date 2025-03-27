@@ -26,5 +26,4 @@ class AuthController(
         authService.signup(signupRequest)
         return ResponseEntity.ok("회원가입 성공")
     }
-    }
 }
