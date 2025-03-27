@@ -39,7 +39,7 @@ COPY --from=builder /app/application/ ./
 # Expose the port the app runs on
 EXPOSE 8080
 
-# Set Tiemzone
+# Set Timezone
 RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime && echo "Asia/Seoul" > /etc/timezone
 
 # Run the application
