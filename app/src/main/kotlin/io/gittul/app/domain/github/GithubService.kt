@@ -6,6 +6,7 @@ import io.gittul.app.domain.github.api.dto.RepositoryInfo
 import io.gittul.app.domain.github.api.dto.TrendingRepositoryApiResponse
 import io.gittul.app.domain.post.PostService
 import io.gittul.app.domain.post.dto.PostFeedResponse
+import io.gittul.app.global.logger
 import io.gittul.app.infra.ai.summery.SummaryService
 import io.gittul.app.infra.ai.summery.dto.SummaryAndRepository
 import io.gittul.core.domain.github.entity.GitHubRepository
@@ -41,17 +42,22 @@ class GithubService(
     }
 
     @Transactional
-    fun getDailyTrendingRepositoriesSummery(admin: User): MutableList<PostFeedResponse> {
-        val trendingRepositories: List<TrendingRepositoryApiResponse> =
-            trendingApiService.dailyTrendingRepositories
+    fun getDailyTrendingRepositoriesSummery(admin: User): List<PostFeedResponse> {
+        val trendingRepositories = trendingApiService.dailyTrendingRepositories
 
         val newRepositories = getNewRepositoryInfos(trendingRepositories).parallelStream()
             .map {
-                val repository = saveRepository(it)
-                val summary = summaryService.generateSummary(it)
-                SummaryAndRepository(summary, repository)
+                try {
+                    val repository = saveRepository(it)
+                    val summary = summaryService.generateSummary(it)
+                    SummaryAndRepository(summary, repository)
+                } catch (e: Exception) {
+                    logger().error("Repository Summary 생성 실패: {}", e.message)
+                    null
+                }
             }
             .toList()
+            .filterNotNull()
 
         return newRepositories.stream() // Note. 병렬 처리 시 태그 유니크 제약 조건 에러 가능성 주의
             .map {

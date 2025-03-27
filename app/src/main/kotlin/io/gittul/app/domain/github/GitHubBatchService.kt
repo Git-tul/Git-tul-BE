@@ -3,7 +3,6 @@ package io.gittul.app.domain.github
 import io.gittul.app.domain.user.UserInquiryService
 import io.gittul.app.global.logger
 import io.gittul.app.infra.notify.SlackService
-import io.gittul.core.global.exception.CustomException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
