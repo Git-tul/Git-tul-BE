@@ -19,12 +19,12 @@ class TagService(
         val existingTags: MutableSet<Tag> = tagRepository.findAllByTagNameIn(tagNames)
 
         val existingTagNames = existingTags.stream()
-            .map<String> { it.tagName }
+            .map { it.tagName }
             .collect(Collectors.toSet())
 
         val newTags = tagNames.stream()
-            .filter { existingTagNames.contains(it) }
-            .map<Tag> { tagName: String -> Tag.of(tagName) }
+            .filter { !existingTagNames.contains(it) }
+            .map { tagName: String -> Tag.of(tagName) }
             .toList()
 
         tagRepository.saveAllAndFlush(newTags)
