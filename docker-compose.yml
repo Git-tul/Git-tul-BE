@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/miensoap/git-tul:latest
+    image: ghcr.io/miensoap/git-tul:multi
     build:
       context: .
       dockerfile: Dockerfile
