@@ -2,40 +2,37 @@ package io.gittul.app.domain.github.api
 
 import io.gittul.app.domain.github.api.dto.TrendingRepositoryApiResponse
 import io.gittul.app.global.logger
-import org.springframework.http.client.reactive.ReactorClientHttpConnector
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
-import org.springframework.web.reactive.function.client.WebClient
-import reactor.core.publisher.Mono
-import reactor.netty.http.client.HttpClient
+import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.RestClient
 
 @Service
-class GithubTrendingApiService(httpClient: HttpClient) {
-    private val webClient: WebClient = WebClient.builder()
-        .baseUrl(TRENDING_BASE_URL)
-        .defaultHeader("Accept", "application/json")
-        .clientConnector(ReactorClientHttpConnector(httpClient))
-        .build()
-
-    private fun getTrendingRepositories(period: String): Mono<List<TrendingRepositoryApiResponse>> {
-        return webClient.get()
-            .uri { uriBuilder ->
-                uriBuilder
-                    .path(REPOSITORIES_PATH)
-                    .queryParam("since", period)
-                    .build()
-            }
-            .retrieve()
-            .bodyToFlux(TrendingRepositoryApiResponse::class.java)
-            .collectList()
-            .doOnError { logger().error("API 호출 실패: ${it.message}") }
-            .onErrorResume { Mono.just(emptyList()) }
-    }
-
-    val dailyTrendingRepositories: List<TrendingRepositoryApiResponse>
-        get() = getTrendingRepositories("daily").block() ?: emptyList()
+class GithubTrendingApiService(
+    private val githubTrendingRestClient: RestClient
+) {
+    private val log = logger()
 
     companion object {
         private const val TRENDING_BASE_URL = "https://gtrend.yapie.me"
         private const val REPOSITORIES_PATH = "/repositories"
     }
+
+    fun getTrendingRepositories(period: String): List<TrendingRepositoryApiResponse> {
+        val url = "$TRENDING_BASE_URL$REPOSITORIES_PATH?since=$period"
+        return try {
+            githubTrendingRestClient
+                .get()
+                .uri(url)
+                .retrieve()
+                .body(Array<TrendingRepositoryApiResponse>::class.java)?.toList()
+                ?: emptyList()
+        } catch (e: HttpClientErrorException) {
+            log.error("트렌딩 API 호출 실패: ${e.message}")
+            emptyList()
+        }
+    }
+
+    val dailyTrendingRepositories: List<TrendingRepositoryApiResponse>
+        get() = getTrendingRepositories("daily")
 }
