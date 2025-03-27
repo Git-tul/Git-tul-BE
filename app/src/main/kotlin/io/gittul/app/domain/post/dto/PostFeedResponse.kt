@@ -8,7 +8,7 @@ import io.gittul.core.domain.user.entity.User
 data class PostFeedResponse(
     val user: UserProfileResponse,
     val title: String,
-    val image: String,
+    val image: String?,
     val description: String,
     val createdAt: String,
     val updatedAt: String,
