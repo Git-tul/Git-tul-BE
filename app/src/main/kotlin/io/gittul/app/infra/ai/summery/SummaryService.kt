@@ -15,8 +15,16 @@ class SummaryService(
     private val objectMapper: ObjectMapper
 ) {
 
+    private val MAX_TOKENS = 128000 - 1000 // prompt 고려
+
     fun generateSummary(repoInfo: RepositoryInfo): RepositorySummary {
         logger().debug("GitHub Repository Info: {}", repoInfo)
+
+        println(repoInfo.basicInfo.toString())
+
+        if (countTokens(repoInfo.basicInfo.toString()) + countTokens(repoInfo.readme) > MAX_TOKENS) {
+            throw IllegalArgumentException("토큰 길이 초과로 요약 생성 불가")
+        }
 
         val prompt: String = """
                 다음 GitHub 저장소 정보를 README 기반으로 분석해 요약을 JSON 형식으로 작성해 줘.
@@ -38,7 +46,6 @@ class SummaryService(
                     "description": "### Spring Boot는 Java로 독립 실행 앱을 쉽게 만듭니다. #### Spring 기반, 자동 설정과 내장 서버로 빠른 배포 지원. ",
                     "tags": ["Java", "Spring", "자동 설정", "배포"]
                 }
-                
                 """
             .trimIndent()
             .format(
@@ -48,9 +55,16 @@ class SummaryService(
         try {
             val response = chatClient.call(prompt)
             logger().debug(response)
-            return objectMapper.readValue<RepositorySummary>(response, RepositorySummary::class.java)
+            return objectMapper.readValue(response, RepositorySummary::class.java)
         } catch (e: Exception) {
             throw CustomException("레포지토리 요약 생성 실패: " + e.message)
         }
+    }
+
+    private fun countTokens(text: String?): Int {
+        if (text == null) return 0
+
+        val regex = Regex("\\p{L}+|\\d+|\\S")
+        return regex.findAll(text).count()
     }
 }
