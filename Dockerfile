@@ -5,10 +5,7 @@ LABEL authors="miensoap"
 FROM gradle:7.5.1-jdk17 AS build
 WORKDIR /app
 
-# Copy the build.gradle and settings.gradle files
-COPY build.gradle settings.gradle /app/
-
-# Copy the gradle wrapper
+# Copy Gradle configuration files
 COPY build.gradle settings.gradle gradlew /app/
 COPY gradle /app/gradle
 
@@ -19,16 +16,25 @@ RUN ./gradlew dependencies
 COPY core /app/core
 COPY app /app/app
 
-
 # Build the application
-RUN ./gradlew :app:build
+RUN ./gradlew :app:bootJar
 
-# Stage 2: Create the runtime image
+# Stage 2: Extract layers
+FROM openjdk:17-jdk-slim AS builder
+WORKDIR /app
+COPY --from=build /app/app/build/libs/app-0.0.1-SNAPSHOT.jar /app/Git-tul-BE.jar
+
+RUN java -Djarmode=layertools -jar Git-tul-BE.jar extract
+
+# Stage 3: Create the runtime image
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 
-# Copy the JAR file from the build stage
-COPY --from=build /app/app/build/libs/app-0.0.1-SNAPSHOT.jar /app/Git-tul-BE.jar
+# Copy layers individually (캐싱 최적화)
+COPY --from=builder /app/dependencies/ ./
+COPY --from=builder /app/spring-boot-loader/ ./
+COPY --from=builder /app/snapshot-dependencies/ ./
+COPY --from=builder /app/application/ ./
 
 # Expose the port the app runs on
 EXPOSE 8080
@@ -37,4 +43,4 @@ EXPOSE 8080
 RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime && echo "Asia/Seoul" > /etc/timezone
 
 # Run the application
-CMD ["java", "-Duser.timezone=Asia/Seoul", "-jar", "Git-tul-BE.jar"]
+CMD ["java", "-Duser.timezone=Asia/Seoul", "org.springframework.boot.loader.launch.JarLauncher"]
