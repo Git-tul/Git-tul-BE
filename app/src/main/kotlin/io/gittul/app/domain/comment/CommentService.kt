@@ -22,12 +22,12 @@ class CommentService(
         user: User?
     ): Comment {
         val post = postRepository.findById(postId)
-            .orElseThrow<CustomException>(Supplier {
+            .orElseThrow {
                 CustomException(
                     HttpStatus.NOT_FOUND,
                     "게시글을 찾을 수 없습니다."
                 )
-            }) // Todo. 문법?
+            } // Todo. 문법?
 
 
         val comment = Comment.of(request.content, request.image, user, post)
@@ -39,12 +39,12 @@ class CommentService(
 
     fun deleteComment(user: User, postId: Long, id: Long) {
         val post = postRepository.findById(postId)
-            .orElseThrow<CustomException?>(Supplier { CustomException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다.") })
+            .orElseThrow { CustomException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다.") }
 
         val requestingComment = post.comments.stream()
             .filter { it.commentId == id }
             .findAny()
-            .orElseThrow<CustomException>(Supplier { CustomException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다.") })
+            .orElseThrow { CustomException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다.") }
 
         if (requestingComment.user.userId != user.userId) {
             throw CustomException(HttpStatus.FORBIDDEN, "댓글을 삭제할 권한이 없습니다.")
