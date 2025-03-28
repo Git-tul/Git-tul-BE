@@ -1,6 +1,13 @@
 plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
+    id("org.asciidoctor.jvm.convert") version "3.3.0"
+}
+
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xjsr305=strict")
+    }
 }
 
 dependencies {
@@ -8,6 +15,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+
+    // database
+    runtimeOnly("com.mysql:mysql-connector-j")
 
     // jwt
     implementation("io.jsonwebtoken:jjwt-api:0.12.5")
@@ -24,8 +34,5 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
 }
 
-kotlin {
-    compilerOptions {
-        freeCompilerArgs.addAll("-Xjsr305=strict")
-    }
-}
+// spring restdocs
+apply(from = "restdocs.gradle")
