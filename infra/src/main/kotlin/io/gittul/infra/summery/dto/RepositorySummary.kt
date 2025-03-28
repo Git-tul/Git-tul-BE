@@ -1,4 +1,4 @@
-package io.gittul.app.infra.ai.summery.dto
+package io.gittul.infra.summery.dto
 
 data class RepositorySummary(
     val title: String,

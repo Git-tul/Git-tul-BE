@@ -1,10 +1,10 @@
-package io.gittul.app.infra.ai.summery
+package io.gittul.infra.summery
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.gittul.app.domain.github.api.dto.RepositoryInfo
-import io.gittul.app.global.logger
-import io.gittul.app.infra.ai.summery.dto.RepositorySummary
+import io.gittul.infra.global.logger
+import io.gittul.infra.summery.dto.RepositorySummary
 import io.gittul.core.global.exception.CustomException
+import io.gittul.infra.github.dto.RepositoryInfo
 import org.springframework.ai.openai.OpenAiChatModel
 import org.springframework.stereotype.Service
 

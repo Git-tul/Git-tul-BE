@@ -1,4 +1,4 @@
-package io.gittul.app.domain.github.api.dto
+package io.gittul.infra.github.dto
 
 data class TrendingRepositoryApiResponse(
     val author: String,

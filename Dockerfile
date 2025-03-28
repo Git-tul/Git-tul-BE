@@ -22,7 +22,7 @@ RUN ./gradlew :app:bootJar
 # Stage 2: Extract layers
 FROM openjdk:17-jdk-slim AS builder
 WORKDIR /app
-COPY --from=build /app/app/build/libs/app-0.0.1-SNAPSHOT.jar /app/Git-tul-BE.jar
+COPY --from=build /app/app/build/libs/app.jar /app/Git-tul-BE.jar
 
 RUN java -Djarmode=layertools -jar Git-tul-BE.jar extract
 

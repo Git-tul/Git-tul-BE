@@ -1,8 +1,8 @@
-package io.gittul.app.domain.github.api
+package io.gittul.infra.github
 
-import io.gittul.app.domain.github.api.dto.RepositoryBasicInfoResponse
-import io.gittul.app.domain.github.api.dto.RepositoryInfo
-import io.gittul.app.global.logger
+import io.gittul.infra.github.dto.RepositoryBasicInfoResponse
+import io.gittul.infra.github.dto.RepositoryInfo
+import io.gittul.infra.global.logger
 import io.gittul.core.global.exception.CustomException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
@@ -49,7 +49,6 @@ class GitHubApiService(
                 "README 파일이 존재하지 않습니다."
             }
 
-            println("basicInfo: $basicInfo")
             return RepositoryInfo(basicInfo, readmeResponse)
         } catch (e: Exception) {
             log.error("레포지토리 정보 조합 실패: {}/{}", owner, repo, e)

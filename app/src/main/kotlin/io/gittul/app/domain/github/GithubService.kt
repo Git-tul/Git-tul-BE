@@ -1,14 +1,14 @@
 package io.gittul.app.domain.github
 
-import io.gittul.app.domain.github.api.GitHubApiService
-import io.gittul.app.domain.github.api.GithubTrendingApiService
-import io.gittul.app.domain.github.api.dto.RepositoryInfo
-import io.gittul.app.domain.github.api.dto.TrendingRepositoryApiResponse
+import io.gittul.infra.github.GitHubApiService
+import io.gittul.infra.github.GithubTrendingApiService
+import io.gittul.infra.github.dto.RepositoryInfo
+import io.gittul.infra.github.dto.TrendingRepositoryApiResponse
 import io.gittul.app.domain.post.PostService
 import io.gittul.app.domain.post.dto.PostFeedResponse
 import io.gittul.app.global.logger
-import io.gittul.app.infra.ai.summery.SummaryService
-import io.gittul.app.infra.ai.summery.dto.SummaryAndRepository
+import io.gittul.infra.summery.SummaryService
+import io.gittul.infra.summery.dto.SummaryAndRepository
 import io.gittul.core.domain.github.entity.GitHubRepository
 import io.gittul.core.domain.user.entity.User
 import org.springframework.stereotype.Service

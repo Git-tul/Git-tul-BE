@@ -1,4 +1,4 @@
-package io.gittul.app.infra.notify
+package io.gittul.infra.notify.slack
 
 import com.slack.api.Slack
 import com.slack.api.model.Attachment
@@ -6,7 +6,7 @@ import com.slack.api.model.Field
 import com.slack.api.model.ModelConfigurator
 import com.slack.api.webhook.Payload.PayloadBuilder
 import com.slack.api.webhook.WebhookPayloads
-import io.gittul.app.global.logger
+import io.gittul.infra.global.logger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.io.IOException

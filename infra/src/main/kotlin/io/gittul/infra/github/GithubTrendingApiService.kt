@@ -1,8 +1,7 @@
-package io.gittul.app.domain.github.api
+package io.gittul.infra.github
 
-import io.gittul.app.domain.github.api.dto.TrendingRepositoryApiResponse
-import io.gittul.app.global.logger
-import org.springframework.beans.factory.annotation.Qualifier
+import io.gittul.infra.github.dto.TrendingRepositoryApiResponse
+import io.gittul.infra.global.logger
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestClient

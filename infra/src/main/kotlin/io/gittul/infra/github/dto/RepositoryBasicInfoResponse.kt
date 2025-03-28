@@ -1,4 +1,4 @@
-package io.gittul.app.domain.github.api.dto
+package io.gittul.infra.github.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper

@@ -4,7 +4,7 @@ import io.gittul.app.domain.post.dto.NormalPostCreateRequest
 import io.gittul.app.domain.post.dto.PostDetailResponse
 import io.gittul.app.domain.post.dto.PostFeedResponse
 import io.gittul.app.domain.tag.TagService
-import io.gittul.app.infra.ai.summery.dto.RepositorySummary
+import io.gittul.infra.summery.dto.RepositorySummary
 import io.gittul.core.domain.bookmark.entity.Bookmark
 import io.gittul.core.domain.follow.entity.UserFollow
 import io.gittul.core.domain.github.entity.GitHubRepository

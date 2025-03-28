@@ -1,3 +1,4 @@
 rootProject.name = "Git-tul-BE"
 include "app"
 include "core"
+include "infra"

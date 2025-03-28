@@ -1,4 +1,4 @@
-package io.gittul.app.infra.notify
+package io.gittul.infra.notify.slack
 
 enum class Color(val code: String) {
     GREEN("#36a64f"),
