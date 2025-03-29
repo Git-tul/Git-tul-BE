@@ -1,5 +1,6 @@
 package io.gittul.app.domain.user
 
+import io.gittul.core.domain.user.entity.OauthInfo
 import io.gittul.core.domain.user.entity.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
@@ -12,4 +13,6 @@ interface UserRepository : JpaRepository<User, Long> {
     fun existsByUserName(name: String): Boolean
 
     fun existsByEmail(email: String): Boolean
+
+    fun findByOauthInfo(oauthInfo: OauthInfo): User?
 }

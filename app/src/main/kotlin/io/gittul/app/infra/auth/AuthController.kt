@@ -3,17 +3,16 @@ package io.gittul.app.infra.auth
 import io.gittul.app.infra.auth.dto.LoginRequest
 import io.gittul.app.infra.auth.dto.LoginSuccessResponse
 import io.gittul.app.infra.auth.dto.SignupRequest
+import io.gittul.app.infra.auth.oauth.provider.OauthProviderName
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/auth")
 class AuthController(
-    private val authService: AuthService
+    private val authService: AuthService,
 ) {
 
     @PostMapping("/login")
@@ -25,5 +24,17 @@ class AuthController(
     fun signup(@Valid @RequestBody signupRequest: SignupRequest): ResponseEntity<String> {
         authService.signup(signupRequest)
         return ResponseEntity.ok("회원가입 성공")
+    }
+
+    @PostMapping("/oauth/{provider}")
+    fun loginWithOauth(
+        @PathVariable provider: String,
+        @RequestParam("code") code: String,
+        request: HttpServletRequest
+    ): LoginSuccessResponse {
+        val providerName = OauthProviderName.fromString(provider)
+        val origin = request.getHeader("Origin")
+
+        return LoginSuccessResponse(authService.loginWithOauth(providerName, code, origin))
     }
 }
