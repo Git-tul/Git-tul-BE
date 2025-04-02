@@ -18,6 +18,7 @@ dependencies {
 
     // database
     runtimeOnly("com.mysql:mysql-connector-j")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 
     // jwt
     implementation("io.jsonwebtoken:jjwt-api:0.12.5")
