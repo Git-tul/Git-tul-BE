@@ -40,6 +40,7 @@ class GitHubOauthProvider : OauthProvider(
         println("GitHub User Info: $userInfoResponse")
 
         return OauthUserInfo(
+            provider = this.providerName,
             oauthId = userInfoResponse.id,
             email = userInfoResponse.email,
             name = userInfoResponse.name,

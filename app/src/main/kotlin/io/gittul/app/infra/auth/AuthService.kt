@@ -7,9 +7,9 @@ import io.gittul.app.infra.auth.dto.SignupRequest
 import io.gittul.app.infra.auth.exception.AuthenticationException
 import io.gittul.app.infra.auth.jwt.JwtProvider
 import io.gittul.app.infra.auth.jwt.TokenUserInfo
+import io.gittul.app.infra.auth.oauth.dto.OauthUserInfo
 import io.gittul.app.infra.auth.oauth.provider.OauthProvider
 import io.gittul.app.infra.auth.oauth.provider.OauthProviderName
-import io.gittul.core.domain.user.entity.OauthInfo
 import io.gittul.core.domain.user.entity.Role
 import io.gittul.core.domain.user.entity.User
 import org.springframework.stereotype.Service
@@ -18,9 +18,10 @@ import org.springframework.stereotype.Service
 class AuthService(
     private val userRepository: UserRepository,
     private val jwtProvider: JwtProvider,
-    private val oauthProviderList: List<OauthProvider>
+    oauthProviderList: List<OauthProvider>
 ) {
 
+    // Todo. 최소 하나의 빈이 존재해야 하는지? 중복일 경우 로그로 남길건지?
     private val oauthProviders: Map<OauthProviderName, OauthProvider> =
         oauthProviderList.associateBy { it.providerName }
 
@@ -69,33 +70,34 @@ class AuthService(
         code: String,
         origin: String
     ): String {
-        val userInfo = this.oauthProviders[provider]?.getUserInfo(code, origin)
-            ?: throw AuthenticationException("OAuth 인증 실패")
+        val userInfo = getOauthUserInfo(provider, code, origin)
 
-        val authInfo = OauthInfo(provider.name, userInfo.oauthId)
-        val existingOauthUser = userRepository.findByOauthInfo(authInfo)
+        userRepository.findByOauthInfo(userInfo.toOauthInfo())
+            ?.let { user -> return jwtProvider.createToken(TokenUserInfo.of(user)) }
 
-        if (existingOauthUser != null) {
-            return jwtProvider.createToken(TokenUserInfo.of(existingOauthUser))
-        }
+        val user = createNewUser(userInfo)
+        return jwtProvider.createToken(TokenUserInfo.of(user))
+    }
 
-        if (userInfo.email != null) {
-            val existingUser = userRepository.findByEmail(userInfo.email)
+    private fun getOauthUserInfo(provider: OauthProviderName, code: String, origin: String): OauthUserInfo {
+        return oauthProviders[provider]?.getUserInfo(code, origin)
+            ?: throw AuthenticationException("지원하지 않는 OAuth 제공자: ${provider.name}")
+    }
 
-            if (existingUser != null) {
+    private fun createNewUser(userInfo: OauthUserInfo): User {
+        userInfo.email?.let { email ->
+            userRepository.findByEmail(email)?.let { existingUser ->
                 val providerName = existingUser.oauthInfo?.oauthProvider ?: "이메일"
                 throw AuthenticationException(
-                    "이미 가입된 이메일입니다. $providerName 계정으로 로그인 해주세요." // Todo. 계정 연결
+                    "이미 가입된 이메일입니다. $providerName 계정으로 로그인 해주세요."
                 )
             }
         }
 
-        var name = userInfo.name
-        if (userRepository.existsByUserName(userInfo.name)) {
-            name = provider.name + "에서온 " + userInfo.name
-        }
+        val authInfo = userInfo.toOauthInfo()
+        val name = generateUniqueName(authInfo.oauthProvider, userInfo.name)
 
-        val user = userRepository.save(
+        return userRepository.save(
             User.ofOauth(
                 name,
                 userInfo.email,
@@ -103,7 +105,11 @@ class AuthService(
                 authInfo
             )
         )
+    }
 
-        return jwtProvider.createToken(TokenUserInfo.of(user))
+    private fun generateUniqueName(provider: String, baseName: String?): String {
+        val name = baseName ?: "${provider}사용자"
+        if (userRepository.existsByUserName(name)) return "${provider}에서온 $name"
+        return name
     }
 }
