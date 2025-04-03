@@ -20,8 +20,6 @@ class SummaryService(
     fun generateSummary(repoInfo: RepositoryInfo): RepositorySummary {
         logger().debug("GitHub Repository Info: {}", repoInfo)
 
-        println(repoInfo.basicInfo.toString())
-
         if (countTokens(repoInfo.basicInfo.toString()) + countTokens(repoInfo.readme) > MAX_TOKENS) {
             throw IllegalArgumentException("토큰 길이 초과로 요약 생성 불가")
         }

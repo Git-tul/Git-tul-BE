@@ -37,8 +37,6 @@ class GitHubOauthProvider : OauthProvider(
             .body<GitHubUserResponse>()
             ?: throw CustomException("Failed to fetch user info from GitHub")
 
-        println("GitHub User Info: $userInfoResponse")
-
         return OauthUserInfo(
             provider = this.providerName,
             oauthId = userInfoResponse.id,
