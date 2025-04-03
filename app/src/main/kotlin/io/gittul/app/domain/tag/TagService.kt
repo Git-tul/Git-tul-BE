@@ -24,6 +24,7 @@ class TagService(
 
         val newTags = tagNames.stream()
             .filter { !existingTagNames.contains(it) }
+            .distinct()
             .map { tagName: String -> Tag.of(tagName) }
             .toList()
 
