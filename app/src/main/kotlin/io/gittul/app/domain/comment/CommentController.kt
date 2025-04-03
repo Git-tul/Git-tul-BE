@@ -9,13 +9,12 @@ import io.gittul.core.domain.user.entity.User
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
 
-@RequestMapping("/posts/{postId}/comments")
+@RequestMapping("/posts/{postId}/comments") // Todo. URL 점검
 @RestController
 class CommentController(
     private val commentService: CommentService,
     private val likeService: LikeService
 ) {
-    private val log = logger()
 
     @PostMapping
     fun createComment(
@@ -25,7 +24,7 @@ class CommentController(
     ): CommentResponse? {
         val comment = commentService.createComment(request, postId, user)
 
-        log.info("[댓글 작성] {} 게시글에 {} 가 {} 댓글 작성", postId, user.email, comment.commentId)
+        logger().info("[댓글 작성] {} 게시글에 {} 가 {} 댓글 작성", postId, user.email, comment.commentId)
         return CommentResponse.ofAndTo(comment, user)
     }
 

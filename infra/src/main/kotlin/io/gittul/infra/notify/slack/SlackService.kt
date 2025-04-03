@@ -13,8 +13,6 @@ import java.io.IOException
 
 @Service
 class SlackService {
-    private val log = logger()
-
     @Value("\${webhook.slack.url}")
     private val SLACK_WEBHOOK_URL: String? = null
 
@@ -23,7 +21,7 @@ class SlackService {
     fun sendMessage(title: String, data: Map<String, String>) {
         try {
             slackClient.send(
-                SLACK_WEBHOOK_URL, WebhookPayloads.payload(ModelConfigurator { p: PayloadBuilder? ->
+                SLACK_WEBHOOK_URL, WebhookPayloads.payload { p: PayloadBuilder? ->
                     p!!
                         .text(title)
                         .attachments(
@@ -31,13 +29,13 @@ class SlackService {
                                 Attachment.builder().color(Color.GREEN.code)
                                     .fields(
                                         data.keys.stream()
-                                            .map<Field> { generateSlackField(it, data[it]) }
+                                            .map { generateSlackField(it, data[it]) }
                                             .toList()
                                     ).build()))
-                })
+                }
             )
         } catch (e: IOException) {
-            log.warn("[Slack 알림] Slack 메시지 전송에 실패했습니다. title: {}, data: {}", title, data)
+            logger().warn("[Slack 알림] Slack 메시지 전송에 실패했습니다. title: {}, data: {}", title, data)
         }
     }
 

@@ -10,8 +10,6 @@ import org.springframework.web.client.RestClient
 class GithubTrendingApiService(
     private val githubTrendingRestClient: RestClient
 ) {
-    private val log = logger()
-
     companion object {
         private const val TRENDING_BASE_URL = "https://gtrend.yapie.me"
         private const val REPOSITORIES_PATH = "/repositories"
@@ -27,7 +25,7 @@ class GithubTrendingApiService(
                 .body(Array<TrendingRepositoryApiResponse>::class.java)?.toList()
                 ?: emptyList()
         } catch (e: HttpClientErrorException) {
-            log.error("트렌딩 API 호출 실패: ${e.message}")
+            logger().error("트렌딩 API 호출 실패: ${e.message}")
             emptyList()
         }
     }

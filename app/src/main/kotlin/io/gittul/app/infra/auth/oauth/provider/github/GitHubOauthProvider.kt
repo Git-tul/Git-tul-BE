@@ -7,6 +7,7 @@ import io.gittul.app.infra.auth.oauth.provider.github.dto.GitHubAccessTokenRespo
 import io.gittul.app.infra.auth.oauth.provider.github.dto.GitHubUserResponse
 import io.gittul.core.global.exception.CustomException
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
@@ -32,7 +33,7 @@ class GitHubOauthProvider : OauthProvider(
 
         val userInfoResponse = restClient.get()
             .uri(userInfoUrl)
-            .header("Authorization", "Bearer $accessToken")
+            .headers { it.setBearerAuth(accessToken) }
             .retrieve()
             .body<GitHubUserResponse>()
             ?: throw CustomException("Failed to fetch user info from GitHub")
@@ -47,7 +48,9 @@ class GitHubOauthProvider : OauthProvider(
     }
 
     private fun getAccessToken(code: String, origin: String): String {
-        val accessTokenUrl = UriComponentsBuilder.fromUriString("https://github.com/login/oauth/access_token")
+        val accessTokenUrl = "https://github.com/login/oauth/access_token"
+
+        val requestUrl = UriComponentsBuilder.fromUriString(accessTokenUrl)
             .queryParam("client_id", clientId)
             .queryParam("client_secret", clientSecret)
             .queryParam("code", code)
@@ -56,8 +59,8 @@ class GitHubOauthProvider : OauthProvider(
             .toUriString()
 
         val accessTokenResponse = restClient.post()
-            .uri(accessTokenUrl)
-            .header("accept", "application/json")
+            .uri(requestUrl)
+            .headers { it.accept = listOf(MediaType.APPLICATION_JSON) }
             .retrieve()
             .body<GitHubAccessTokenResponse>()
 
