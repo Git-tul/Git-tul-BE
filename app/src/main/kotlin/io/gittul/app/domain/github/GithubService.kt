@@ -3,6 +3,7 @@ package io.gittul.app.domain.github
 import io.gittul.app.domain.github.document.GenerateTrendingRepoResult
 import io.gittul.app.domain.post.PostService
 import io.gittul.app.domain.post.dto.PostFeedResponse
+import io.gittul.app.global.atEndOfDay
 import io.gittul.app.global.logger
 import io.gittul.app.infra.MongoService
 import io.gittul.core.domain.github.entity.GitHubRepository
@@ -16,6 +17,7 @@ import io.gittul.infra.summery.dto.SummaryAndRepository
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 import java.util.*
 
 @Service
@@ -108,14 +110,18 @@ class GithubService( // Todo. 정리
     }
 
     fun getDailyTrendingRepositoriesSummeryHistory(
-        startDate: Date,
-        endDate: Date
+        startDate: LocalDate,
+        endDate: LocalDate
     ):
             List<GenerateTrendingRepoResult> {
+
+        val startDateTime = startDate.atStartOfDay() // 00:00:00
+        val endDateTime = endDate.atEndOfDay() // 23:59:59
+
         return mongoService.findAllByDateRange(
             GenerateTrendingRepoResult::class.java,
-            startDate,
-            endDate
+            startDateTime,
+            endDateTime
         )
     }
 

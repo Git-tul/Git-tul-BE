@@ -1,10 +1,12 @@
 package io.gittul.app.infra
 
+import io.gittul.app.global.atEndOfDay
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Service
-import java.util.*
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Service
 class MongoService( //  Todo. 학습 전 임시
@@ -16,13 +18,13 @@ class MongoService( //  Todo. 학습 전 임시
 
     fun <T : Any> findAllByDateRange(
         entityClass: Class<T>,
-        startDate: Date, endDate: Date
+        startDateTime: LocalDateTime, endDateTime: LocalDateTime
     ): List<T> {
         val query = Query()
             .addCriteria(
                 Criteria.where("createdAt")
-                    .gte(startDate)
-                    .lte(endDate)
+                    .gte(startDateTime)
+                    .lte(endDateTime)
             )
         return mongoTemplate.find(query, entityClass)
     }

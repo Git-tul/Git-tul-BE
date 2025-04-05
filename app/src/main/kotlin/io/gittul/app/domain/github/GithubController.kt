@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
+import java.time.LocalDate
 
 @RequestMapping("/github")
 @RestController
@@ -43,9 +43,9 @@ class GithubController(
     @GetMapping("/trending/daily/history")
     fun getDailyTrendingRepositoriesHistory(
         @Authenticated admin: User,
-        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: Date = Date(),
-        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: Date = Date(),
+        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") start: LocalDate = LocalDate.now(),
+        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") end: LocalDate = LocalDate.now(),
     ): List<GenerateTrendingRepoResult> {
-        return githubApiService.getDailyTrendingRepositoriesSummeryHistory(startDate, endDate)
+        return githubApiService.getDailyTrendingRepositoriesSummeryHistory(start, end)
     }
 }
