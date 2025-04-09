@@ -8,11 +8,11 @@ import io.gittul.core.global.exception.CustomException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.function.Supplier
 
 @Service
 class CommentService(
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
+    private val commentRepository: CommentRepository
 ) {
 
     @Transactional
@@ -37,14 +37,12 @@ class CommentService(
         return comment
     }
 
-    fun deleteComment(user: User, postId: Long, id: Long) {
-        val post = postRepository.findById(postId)
-            .orElseThrow { CustomException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다.") }
+    fun deleteComment(user: User, id: Long) {
+        val requestingComment = commentRepository.findById(id).orElseThrow {
+            CustomException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다.")
+        }
 
-        val requestingComment = post.comments.stream()
-            .filter { it.commentId == id }
-            .findAny()
-            .orElseThrow { CustomException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다.") }
+        val post = requestingComment.post
 
         if (requestingComment.user.userId != user.userId) {
             throw CustomException(HttpStatus.FORBIDDEN, "댓글을 삭제할 권한이 없습니다.")

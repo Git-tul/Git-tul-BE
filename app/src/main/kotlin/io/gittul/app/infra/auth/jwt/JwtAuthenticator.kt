@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component
 @Component
 class JwtAuthenticator(
     private val jwtProvider: JwtProvider,
-    private val userService: UserInquiryService // Todo. ThreadLocal 로 변경 고려
+    private val userService: UserInquiryService
 ) {
 
     fun authenticate(request: HttpServletRequest): User {
-        val authorizationHeader: String =
-            request.getHeader("Authorization") ?: throw AuthenticationException.TOKEN_NOT_FOUND
+        val authorizationHeader: String = request.getHeader("Authorization")
+            ?: throw AuthenticationException.TOKEN_NOT_FOUND
 
         val token: String = extractToken(authorizationHeader)
 

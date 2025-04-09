@@ -4,12 +4,13 @@ import io.gittul.app.domain.comment.dto.CommentCreateRequest
 import io.gittul.app.domain.comment.dto.CommentResponse
 import io.gittul.app.domain.like.LikeService
 import io.gittul.app.global.logger
-import io.gittul.app.infra.auth.aop.Authenticated
-import io.gittul.core.domain.user.entity.User
+import io.gittul.app.infra.auth.aop.AccessGuard
+import io.gittul.app.infra.auth.aop.AuthContext
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
 
-@RequestMapping("/posts/{postId}/comments") // Todo. URL 점검
+@AccessGuard
+@RequestMapping("/comments")
 @RestController
 class CommentController(
     private val commentService: CommentService,
@@ -18,38 +19,36 @@ class CommentController(
 
     @PostMapping
     fun createComment(
-        @Authenticated user: User,
-        @PathVariable postId: Long,
         @RequestBody request: @Valid CommentCreateRequest
     ): CommentResponse? {
-        val comment = commentService.createComment(request, postId, user)
+        val user = AuthContext.getUser();
+        val comment = commentService.createComment(request, request.postId, user)
 
-        logger().info("[댓글 작성] {} 게시글에 {} 가 {} 댓글 작성", postId, user.email, comment.commentId)
+        logger().info("[댓글 작성] {} 게시글에 {} 가 {} 댓글 작성", request.postId, user.email, comment.commentId)
         return CommentResponse.ofAndTo(comment, user)
     }
 
     @DeleteMapping("/{id}")
     fun deleteComment(
-        @Authenticated user: User,
-        @PathVariable postId: Long,
         @PathVariable id: Long
     ) {
-        commentService.deleteComment(user, postId, id)
+        val user = AuthContext.getUser();
+        commentService.deleteComment(user, id)
     }
 
     @PostMapping("/{id}/like")
     fun likeComment(
-        @Authenticated user: User,
         @PathVariable id: Long
     ) {
+        val user = AuthContext.getUser();
         likeService.likeComment(user, id)
     }
 
     @DeleteMapping("/{id}/like")
     fun unLikeComment(
-        @Authenticated user: User,
         @PathVariable id: Long
     ) {
+        val user = AuthContext.getUser();
         likeService.unLikeComment(user, id)
     }
 }
