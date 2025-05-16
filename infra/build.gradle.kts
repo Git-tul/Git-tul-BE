@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
@@ -24,5 +26,11 @@ dependencies {
 
     // api
     implementation("com.slack.api:slack-api-client:1.45.3")
-    implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter:1.0.0-SNAPSHOT")
+
+    implementation("org.springframework.ai:spring-ai-core:1.0.0-M6")
+    implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter:1.0.0-M6")
+}
+
+tasks.withType<BootJar> {
+    enabled = false
 }
