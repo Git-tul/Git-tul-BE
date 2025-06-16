@@ -4,6 +4,7 @@ import io.gittul.core.domain.follow.entity.UserFollow;
 import io.gittul.core.domain.tag.entity.Tag;
 import io.gittul.core.domain.tag.entity.UserInterest;
 import io.gittul.core.global.jpa.EntityTimeStamp;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,19 +12,31 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+@Table(
+        name = "user",
+        indexes = {
+                @Index(name = "idx_user_email", columnList = "email"),
+                @Index(name = "idx_user_userName", columnList = "userName")
+        }
+)
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends EntityTimeStamp {
 
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -33,14 +46,14 @@ public class User extends EntityTimeStamp {
     private String profileImage;
 
     @Embedded
-    Password password;
+    private Password password;
 
     @Embedded
     private OauthInfo oauthInfo;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
-
 
     @Builder.Default
     @Embedded
