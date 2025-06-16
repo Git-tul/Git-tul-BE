@@ -6,6 +6,9 @@ dependencies {
     implementation("de.svenkubiak:jBCrypt:0.4.1")
 }
 
+apply from: "./querydsl.gradle"
+
+
 jar {
     enabled = true
 }

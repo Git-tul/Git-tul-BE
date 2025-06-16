@@ -1,0 +1,24 @@
+ext {
+    querydslVersion = "5.0.0:jakarta"
+}
+
+dependencies {
+    implementation("com.querydsl:querydsl-jpa:${querydslVersion}")
+    annotationProcessor("com.querydsl:querydsl-apt:${querydslVersion}")
+    annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+}
+
+def querydslDir = layout.buildDirectory.dir("generated/querydsl")
+
+sourceSets {
+    main.java.srcDirs += querydslDir
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
+}
+
+clean.doLast {
+    file(querydslDir).deleteDir()
+}

@@ -1,6 +1,8 @@
 plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
+    kotlin("kapt") version "1.9.25"
+    id("java")
     id("org.asciidoctor.jvm.convert") version "3.3.0"
 }
 
@@ -9,6 +11,9 @@ kotlin {
         freeCompilerArgs.addAll("-Xjsr305=strict")
     }
 }
+
+val querydslVersion = "5.0.0"
+val querydslOutputDir = file("build/generated/querydsl")
 
 dependencies {
     // kotlin
@@ -34,7 +39,24 @@ dependencies {
 
     // swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
+
+    implementation("com.querydsl:querydsl-jpa:$querydslVersion:jakarta")
+    kapt("com.querydsl:querydsl-apt:$querydslVersion:jakarta")
+    kapt("jakarta.annotation:jakarta.annotation-api")
+    kapt("jakarta.persistence:jakarta.persistence-api")
 }
 
-// spring restdocs
+kotlin.sourceSets["main"].kotlin.srcDirs("src/main/kotlin")
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions.jvmTarget = "17"
+}
+
+tasks.clean {
+    doLast {
+        delete(querydslOutputDir)
+    }
+}
+
+// restdocs
 apply(from = "restdocs.gradle")
