@@ -1,8 +1,8 @@
 package io.gittul.app.domain.github
 
 import io.gittul.app.domain.github.document.GenerateTrendingRepoResult
-import io.gittul.app.domain.post.PostService
-import io.gittul.app.domain.post.dto.PostFeedResponse
+import io.gittul.app.domain.thread.TreadService
+import io.gittul.app.domain.thread.dto.ThreadFeedResponse
 import io.gittul.app.global.atEndOfDay
 import io.gittul.app.global.logger
 import io.gittul.app.infra.MongoService
@@ -14,7 +14,6 @@ import io.gittul.infra.github.dto.RepositoryInfo
 import io.gittul.infra.github.dto.TrendingRepositoryApiResponse
 import io.gittul.infra.summery.SummaryService
 import io.gittul.infra.summery.dto.SummaryAndRepository
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
@@ -25,13 +24,13 @@ class GithubService( // Todo. 정리
     private val apiService: GitHubApiService,
     private val trendingApiService: GithubTrendingApiService,
     private val summaryService: SummaryService,
-    private val postService: PostService,
+    private val treadService: TreadService,
     private val repository: GitHubRepositoryRepository,
     private val mongoService: MongoService
 ) {
 
     @Transactional
-    fun getDailyTrendingRepositoriesSummery(admin: User): List<PostFeedResponse> {
+    fun getDailyTrendingRepositoriesSummery(admin: User): List<ThreadFeedResponse> {
         val trendingRepositories = trendingApiService.dailyTrendingRepositories
         val processingResult = processTrendingRepositories(trendingRepositories, admin)
 
@@ -40,7 +39,7 @@ class GithubService( // Todo. 정리
     }
 
     private data class ProcessingResult(
-        val successResults: List<PostFeedResponse>,
+        val successResults: List<ThreadFeedResponse>,
         val errorMessages: List<String>
     )
 
@@ -48,7 +47,7 @@ class GithubService( // Todo. 정리
         trendingRepositories: List<TrendingRepositoryApiResponse>,
         admin: User
     ): ProcessingResult {
-        val successResults = mutableListOf<PostFeedResponse>()
+        val successResults = mutableListOf<ThreadFeedResponse>()
         val errorMessages = mutableListOf<String>()
 
         val newRepositories = getNewRepositoryInfos(trendingRepositories)
@@ -82,9 +81,9 @@ class GithubService( // Todo. 정리
     private fun createPostsFromSummaries(
         summariesAndRepos: List<SummaryAndRepository>,
         admin: User
-    ): List<PostFeedResponse> {
+    ): List<ThreadFeedResponse> {
         return summariesAndRepos.stream()
-            .map { postService.createPostFromSummary(it.repository, it.summary, admin) }
+            .map { treadService.createPostFromSummary(it.repository, it.summary, admin) }
             .toList()
     }
 

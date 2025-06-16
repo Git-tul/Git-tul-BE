@@ -1,9 +1,9 @@
-package io.gittul.app.domain.post.dto
+package io.gittul.app.domain.thread.dto
 
 import io.gittul.core.global.validation.OptionalURL
 import jakarta.validation.constraints.Size
 
-data class NormalPostCreateRequest(
+data class NormalThreadCreateRequest(
     @field:Size(min = 1, max = 30)
     val title: String,
 

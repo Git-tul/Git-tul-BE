@@ -1,7 +1,7 @@
 package io.gittul.app.domain.comment
 
 import io.gittul.app.domain.comment.dto.CommentCreateRequest
-import io.gittul.app.domain.post.PostRepository
+import io.gittul.app.domain.thread.repository.ThreadRepository
 import io.gittul.core.domain.comment.entity.Comment
 import io.gittul.core.domain.user.entity.User
 import io.gittul.core.global.exception.CustomException
@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class CommentService(
-    private val postRepository: PostRepository,
+    private val threadRepository: ThreadRepository,
     private val commentRepository: CommentRepository
 ) {
 
@@ -21,7 +21,7 @@ class CommentService(
         postId: Long,
         user: User?
     ): Comment {
-        val post = postRepository.findById(postId)
+        val post = threadRepository.findById(postId)
             .orElseThrow {
                 CustomException(
                     HttpStatus.NOT_FOUND,
@@ -32,7 +32,7 @@ class CommentService(
 
         val comment = Comment.of(request.content, request.image, user, post)
         post.comments.add(comment)
-        postRepository.saveAndFlush(post)
+        threadRepository.saveAndFlush(post)
 
         return comment
     }
@@ -49,6 +49,6 @@ class CommentService(
         }
 
         post.comments.remove(requestingComment)
-        postRepository.save(post)
+        threadRepository.save(post)
     }
 }

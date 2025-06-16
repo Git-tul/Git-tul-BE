@@ -1,4 +1,4 @@
-package io.gittul.app.domain.post.dto
+package io.gittul.app.domain.thread.dto
 
 import io.gittul.app.domain.comment.dto.CommentResponse
 import io.gittul.app.domain.user.dto.UserProfileResponse
@@ -6,7 +6,7 @@ import io.gittul.core.domain.post.entity.Post
 import io.gittul.core.domain.user.entity.User
 import java.math.BigInteger
 
-data class PostDetailResponse(
+data class ThreadDetailResponse(
     val id: BigInteger,
     val title: String,
     val content: String,
@@ -24,8 +24,8 @@ data class PostDetailResponse(
     val comments: List<CommentResponse>
 ) {
     companion object {
-        fun of(post: Post, requestingUser: User): PostDetailResponse {
-            return PostDetailResponse(
+        fun of(post: Post, requestingUser: User): ThreadDetailResponse {
+            return ThreadDetailResponse(
                 id = BigInteger.valueOf(post.postId),
                 title = post.title,
                 content = post.content,

@@ -1,6 +1,6 @@
 package io.gittul.app.domain.github.document
 
-import io.gittul.app.domain.post.dto.PostFeedResponse
+import io.gittul.app.domain.thread.dto.ThreadFeedResponse
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
@@ -11,13 +11,13 @@ data class GenerateTrendingRepoResult(
     val failedCount: Int,
 
     val errors: List<String> = emptyList(),
-    val results: List<PostFeedResponse>,
+    val results: List<ThreadFeedResponse>,
 
     @CreatedDate
     val createdAt: LocalDateTime = LocalDateTime.now()
 ) {
     companion object {
-        fun of(feeds: List<PostFeedResponse>, errors: List<String>): GenerateTrendingRepoResult {
+        fun of(feeds: List<ThreadFeedResponse>, errors: List<String>): GenerateTrendingRepoResult {
             return GenerateTrendingRepoResult(
                 generatedCount = feeds.size,
                 failedCount = errors.size,

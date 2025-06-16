@@ -1,11 +1,11 @@
-package io.gittul.app.domain.post.dto
+package io.gittul.app.domain.thread.dto
 
 import io.gittul.app.domain.comment.dto.CommentResponse
 import io.gittul.app.domain.user.dto.UserProfileResponse
 import io.gittul.core.domain.post.entity.Post
 import io.gittul.core.domain.user.entity.User
 
-data class PostFeedResponse(
+data class ThreadFeedResponse(
     val user: UserProfileResponse,
     val title: String,
     val image: String?,
@@ -25,7 +25,7 @@ data class PostFeedResponse(
 ) {
     companion object {
         // Todo. 명칭 수정 post -> thread
-        fun ofAndTo(thread: Post, requestingUser: User?): PostFeedResponse {
+        fun ofAndTo(thread: Post, requestingUser: User?): ThreadFeedResponse {
             return createPostFeedResponse(
                 thread,
                 thread.isLikedBy(requestingUser),
@@ -33,7 +33,7 @@ data class PostFeedResponse(
             )
         }
 
-        fun ofNew(thread: Post): PostFeedResponse {
+        fun ofNew(thread: Post): ThreadFeedResponse {
             return createPostFeedResponse(thread, false, false)
         }
 
@@ -41,12 +41,12 @@ data class PostFeedResponse(
             thread: Post,
             isLiked: Boolean,
             isBookmarked: Boolean
-        ): PostFeedResponse {
+        ): ThreadFeedResponse {
             val bestCommentResponse: CommentResponse? = thread.bestComment?.let {
                 CommentResponse.ofAndTo(it, thread.user)
             }
 
-            return PostFeedResponse(
+            return ThreadFeedResponse(
                 user = UserProfileResponse.of(thread.user),
                 title = thread.title,
                 image = thread.imageUrl,

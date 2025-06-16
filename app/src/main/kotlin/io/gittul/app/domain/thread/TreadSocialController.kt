@@ -1,8 +1,8 @@
-package io.gittul.app.domain.post
+package io.gittul.app.domain.thread
 
 import io.gittul.app.domain.bookmark.BookmarkService
 import io.gittul.app.domain.like.LikeService
-import io.gittul.app.domain.post.dto.PostFeedResponse
+import io.gittul.app.domain.thread.dto.ThreadFeedResponse
 import io.gittul.app.infra.auth.aop.AccessGuard
 import io.gittul.app.infra.auth.aop.AuthContext
 import io.gittul.core.global.page.PageQuery
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController
 @AccessGuard
 @RestController
 @RequestMapping("/posts")
-class PostSocialController(
-    private val postService: PostService,
+class TreadSocialController(
+    private val treadService: TreadService,
     private val likeService: LikeService,
     private val bookmarkService: BookmarkService
 ) {
@@ -25,17 +25,17 @@ class PostSocialController(
     @GetMapping("/following")
     fun getFollowingPosts(
         page: PageQuery
-    ): List<PostFeedResponse> {
+    ): List<ThreadFeedResponse> {
         val user = AuthContext.getUser()
-        return postService.getFollowingPosts(user, page.toRequest())
+        return treadService.getFollowingPosts(user, page.toRequest())
     }
 
     @GetMapping("/bookmark")
     fun getBookmarkedPosts(
         page: PageQuery
-    ): List<PostFeedResponse> {
+    ): List<ThreadFeedResponse> {
         val user = AuthContext.getUser()
-        return postService.getBookmarkedPosts(user, page.toRequest())
+        return treadService.getBookmarkedPosts(user, page.toRequest())
     }
 
     @PostMapping("/{id}/like")

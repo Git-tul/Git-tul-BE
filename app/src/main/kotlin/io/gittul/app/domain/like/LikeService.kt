@@ -1,7 +1,7 @@
 package io.gittul.app.domain.like
 
 import io.gittul.app.domain.comment.CommentRepository
-import io.gittul.app.domain.post.PostRepository
+import io.gittul.app.domain.thread.repository.ThreadRepository
 import io.gittul.app.domain.user.UserRepository
 import io.gittul.core.domain.like.entity.UserLikeComment
 import io.gittul.core.domain.like.entity.UserLikePost
@@ -13,14 +13,14 @@ import org.springframework.stereotype.Service
 
 @Service
 class LikeService(
-    private val postRepository: PostRepository,
+    private val threadRepository: ThreadRepository,
     private val commentRepository: CommentRepository,
     private val userRepository: UserRepository,
 ) {
 
 
     fun likePost(user: User, postId: Long) {
-        val post: Post = postRepository.getReferenceById(postId)
+        val post: Post = threadRepository.getReferenceById(postId)
         val like: UserLikePost = UserLikePost.of(user, post)
 
         if (post.isLikedBy(user)) throw CustomException(HttpStatus.CONFLICT, "이미 좋아요한 게시글입니다.")

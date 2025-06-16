@@ -1,9 +1,10 @@
-package io.gittul.app.domain.post
+package io.gittul.app.domain.thread
 
-import io.gittul.app.domain.post.dto.NormalPostCreateRequest
-import io.gittul.app.domain.post.dto.PostDetailResponse
-import io.gittul.app.domain.post.dto.PostFeedResponse
+import io.gittul.app.domain.thread.dto.NormalThreadCreateRequest
+import io.gittul.app.domain.thread.dto.ThreadDetailResponse
+import io.gittul.app.domain.thread.dto.ThreadFeedResponse
 import io.gittul.app.domain.tag.TagService
+import io.gittul.app.domain.thread.repository.ThreadRepository
 import io.gittul.infra.summery.dto.RepositorySummary
 import io.gittul.core.domain.bookmark.entity.Bookmark
 import io.gittul.core.domain.follow.entity.UserFollow
@@ -20,49 +21,49 @@ import java.util.function.Supplier
 import java.util.stream.Collectors
 
 @Service
-class PostService(
-    private val postRepository: PostRepository,
+class TreadService(
+    private val threadRepository: ThreadRepository,
     private val tagService: TagService
 ) {
 
     @Transactional(readOnly = true)
-    fun getAllPosts(user: User, page: PageRequest): List<PostFeedResponse> {
-        val posts = postRepository.findAllByOrderByCreatedAtDesc(page)
+    fun getAllPosts(user: User, page: PageRequest): List<ThreadFeedResponse> {
+        val posts = threadRepository.findAllByOrderByCreatedAtDesc(page)
         return posts.stream()
-            .map { PostFeedResponse.ofAndTo(it, user) }
+            .map { ThreadFeedResponse.ofAndTo(it, user) }
             .collect(Collectors.toList())
     }
 
     @Transactional(readOnly = true)
-    fun getPost(user: User, id: Long): PostDetailResponse {
-        return PostDetailResponse.of(getOrElseThrow(id), user)
+    fun getPost(user: User, id: Long): ThreadDetailResponse {
+        return ThreadDetailResponse.of(getOrElseThrow(id), user)
     }
 
     @Transactional(readOnly = true)
-    fun getBookmarkedPosts(user: User, page: PageRequest): List<PostFeedResponse> {
+    fun getBookmarkedPosts(user: User, page: PageRequest): List<ThreadFeedResponse> {
         val bookmarks = PageUtil.toPage<Bookmark>(user.details.bookmarks, page)
 
         return bookmarks.stream()
             .map(Bookmark::getPost)
-            .map<PostFeedResponse> { PostFeedResponse.ofAndTo(it, user) }
+            .map<ThreadFeedResponse> { ThreadFeedResponse.ofAndTo(it, user) }
             .toList()
     }
 
     @Transactional(readOnly = true)
-    fun getFollowingPosts(user: User, page: PageRequest): List<PostFeedResponse> {
+    fun getFollowingPosts(user: User, page: PageRequest): List<ThreadFeedResponse> {
         val followingUserIds = user.details.followings.stream()
             .map<Long> { follow: UserFollow -> follow.followee.userId }
             .toList()
 
-        val posts = postRepository.findAllByUserUserIdInOrderByCreatedAtDesc(followingUserIds, page)
+        val posts = threadRepository.findAllByUserUserIdInOrderByCreatedAtDesc(followingUserIds, page)
 
         return posts.stream()
-            .map<PostFeedResponse> { PostFeedResponse.ofAndTo(it, user) }
+            .map<ThreadFeedResponse> { ThreadFeedResponse.ofAndTo(it, user) }
             .toList()
     }
 
     @Transactional
-    fun createPost(request: NormalPostCreateRequest, currentUser: User): PostDetailResponse {
+    fun createPost(request: NormalThreadCreateRequest, currentUser: User): ThreadDetailResponse {
         val post = Post.of(
             currentUser,
             request.title,
@@ -71,15 +72,15 @@ class PostService(
         )
         post.addTag(tagService.getOrCreate(request.tags))
 
-        val savedPost = postRepository.save(post)
-        return PostDetailResponse.of(savedPost, currentUser)
+        val savedPost = threadRepository.save(post)
+        return ThreadDetailResponse.of(savedPost, currentUser)
     }
 
     fun createPostFromSummary(
         repository: GitHubRepository,
         summary: RepositorySummary,
         admin: User
-    ): PostFeedResponse {
+    ): ThreadFeedResponse {
         val post = Post.of(
             admin,
             summary.title,
@@ -89,8 +90,8 @@ class PostService(
         )
         post.addTag(tagService.getOrCreate(summary.tags))
 
-        val savedPost = postRepository.save(post)
-        return PostFeedResponse.ofNew(savedPost)
+        val savedPost = threadRepository.save(post)
+        return ThreadFeedResponse.ofNew(savedPost)
     }
 
     @Transactional
@@ -101,11 +102,11 @@ class PostService(
             throw CustomException(HttpStatus.FORBIDDEN, "글을 삭제할 권한이 없습니다.")
         }
 
-        postRepository.delete(post)
+        threadRepository.delete(post)
     }
 
     private fun getOrElseThrow(id: Long): Post {
-        return postRepository.findById(id)
+        return threadRepository.findById(id)
             .orElseThrow<CustomException>(Supplier { CustomException(HttpStatus.NOT_FOUND, "글을 찾을 수 없습니다.") })
     }
 }
