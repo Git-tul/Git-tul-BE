@@ -1,7 +1,7 @@
 package io.gittul.app.infra.auth
 
 import io.gittul.app.infra.auth.dto.LoginRequest
-import io.gittul.app.infra.auth.dto.LoginSuccessResponse
+import io.gittul.app.infra.auth.dto.TokenResponse
 import io.gittul.app.infra.auth.dto.SignupRequest
 import io.gittul.app.infra.auth.oauth.provider.OauthProviderName
 import jakarta.servlet.http.HttpServletRequest
@@ -16,8 +16,8 @@ class AuthController(
 ) {
 
     @PostMapping("/login")
-    fun login(@Valid @RequestBody loginRequest: LoginRequest): LoginSuccessResponse {
-        return LoginSuccessResponse(authService.login(loginRequest))
+    fun login(@Valid @RequestBody loginRequest: LoginRequest): TokenResponse {
+        return TokenResponse(authService.login(loginRequest))
     }
 
     @PostMapping("/signup")
@@ -31,10 +31,10 @@ class AuthController(
         @PathVariable provider: String,
         @RequestParam("code") code: String,
         request: HttpServletRequest
-    ): LoginSuccessResponse {
+    ): TokenResponse {
         val providerName = OauthProviderName.fromString(provider)
         val origin = request.getHeader("Origin")
 
-        return LoginSuccessResponse(authService.loginWithOauth(providerName, code, origin))
+        return TokenResponse(authService.loginWithOauth(providerName, code, origin))
     }
 }
