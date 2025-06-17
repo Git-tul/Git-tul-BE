@@ -6,13 +6,10 @@ import io.gittul.app.domain.thread.dto.ThreadDetailResponse
 import io.gittul.app.domain.thread.dto.ThreadFeedResponse
 import io.gittul.app.domain.thread.repository.ThreadQueryRepository
 import io.gittul.app.domain.thread.repository.ThreadRepository
-import io.gittul.core.domain.bookmark.entity.Bookmark
-import io.gittul.core.domain.follow.entity.UserFollow
 import io.gittul.core.domain.github.entity.GitHubRepository
 import io.gittul.core.domain.post.entity.Post
 import io.gittul.core.domain.user.entity.User
 import io.gittul.core.global.exception.CustomException
-import io.gittul.core.global.page.PageUtil
 import io.gittul.infra.summery.dto.RepositorySummary
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
@@ -28,41 +25,31 @@ class TreadService(
 ) {
 
     @Transactional(readOnly = true)
-    fun getAllPosts(user: User, page: PageRequest): List<ThreadFeedResponse> {
+    fun getAllTreads(user: User, page: PageRequest): List<ThreadFeedResponse> {
         val posts = threadQueryRepository.findAllWithDetails(page)
         return posts.map { ThreadFeedResponse.ofAndTo(it, user) }
     }
 
     @Transactional(readOnly = true)
-    fun getPost(user: User, id: Long): ThreadDetailResponse {
+    fun getThread(user: User, id: Long): ThreadDetailResponse {
         return ThreadDetailResponse.of(getOrElseThrow(id), user)
     }
 
     @Transactional(readOnly = true)
-    fun getBookmarkedPosts(user: User, page: PageRequest): List<ThreadFeedResponse> {
-        val bookmarks = PageUtil.toPage<Bookmark>(user.details.bookmarks, page)
-
-        return bookmarks.stream()
-            .map(Bookmark::getPost)
-            .map { ThreadFeedResponse.ofAndTo(it, user) }
-            .toList()
+    fun getBookmarkedThreads(user: User, page: PageRequest): List<ThreadFeedResponse> {
+        val posts = threadQueryRepository.findAllBookmarkedByUserId(user.userId, page)
+        return posts.map { ThreadFeedResponse.ofAndTo(it, user) }
     }
 
     @Transactional(readOnly = true)
-    fun getFollowingPosts(user: User, page: PageRequest): List<ThreadFeedResponse> {
-        val followingUserIds = user.details.followings.stream()
-            .map { follow: UserFollow -> follow.followee.userId }
-            .toList()
-
-        val posts = threadRepository.findAllByUserUserIdInOrderByCreatedAtDesc(followingUserIds, page)
-
-        return posts.stream()
-            .map { ThreadFeedResponse.ofAndTo(it, user) }
-            .toList()
+    fun getFollowingThreads(user: User, page: PageRequest): List<ThreadFeedResponse> {
+        val followingIds = user.details.followings.map { it.followee.userId }
+        val posts = threadQueryRepository.findByAuthorIds(followingIds, page)
+        return posts.map { ThreadFeedResponse.ofAndTo(it, user) }
     }
 
     @Transactional
-    fun createPost(request: NormalThreadCreateRequest, currentUser: User): ThreadDetailResponse {
+    fun createThread(request: NormalThreadCreateRequest, currentUser: User): ThreadDetailResponse {
         val post = Post.of(
             currentUser,
             request.title,
@@ -75,7 +62,7 @@ class TreadService(
         return ThreadDetailResponse.of(savedPost, currentUser)
     }
 
-    fun createPostFromSummary(
+    fun createThreadFromSummary(
         repository: GitHubRepository,
         summary: RepositorySummary,
         admin: User
@@ -94,7 +81,7 @@ class TreadService(
     }
 
     @Transactional
-    fun deletePost(user: User, id: Long) {
+    fun deleteThread(user: User, id: Long) {
         val post = getOrElseThrow(id)
 
         if (post.user.userId != user.userId) {
@@ -105,7 +92,7 @@ class TreadService(
     }
 
     private fun getOrElseThrow(id: Long): Post {
-        return threadRepository.findById(id)
+        return threadQueryRepository.findByIdWithDetails(id)
             .orElseThrow(Supplier { CustomException(HttpStatus.NOT_FOUND, "글을 찾을 수 없습니다.") })
     }
 }
