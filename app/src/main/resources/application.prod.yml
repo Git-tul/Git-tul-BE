@@ -1,0 +1,7 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: false
+        highlight_sql: false

@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    default: dev
   config:
     import: application-secret.yml
   jpa:
@@ -11,9 +13,6 @@ spring:
         jdbc:
           time_zone: Asia/Seoul
         default_batch_fetch_size: 1000
-        show_sql: false
-        format_sql: true
-        highlight: true
 
 springdoc:
   api-docs:
