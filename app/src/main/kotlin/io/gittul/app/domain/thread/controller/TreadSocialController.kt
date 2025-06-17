@@ -1,16 +1,21 @@
-package io.gittul.app.domain.thread
+package io.gittul.app.domain.thread.controller
 
 import io.gittul.app.domain.bookmark.BookmarkService
 import io.gittul.app.domain.like.LikeService
+import io.gittul.app.domain.thread.ThreadService
 import io.gittul.app.domain.thread.dto.ThreadFeedResponse
 import io.gittul.app.infra.auth.aop.AccessGuard
 import io.gittul.app.infra.auth.aop.AuthContext
 import io.gittul.core.global.page.PageQuery
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @AccessGuard
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/threads")
 class TreadSocialController(
     private val threadService: ThreadService,
     private val likeService: LikeService,
