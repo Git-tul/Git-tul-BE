@@ -23,10 +23,13 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Entity
@@ -61,14 +64,15 @@ public class Post extends EntityTimeStamp {
 
     private int viewCount;
 
+    @BatchSize(size = 50)
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-    private List<UserLikePost> likes = new ArrayList<>();
+    private Set<UserLikePost> likes = new HashSet<>();
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-    private List<Bookmark> bookmarks = new ArrayList<>();
+    private Set<Bookmark> bookmarks = new HashSet<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<PostTag> postTags = new ArrayList<>();
