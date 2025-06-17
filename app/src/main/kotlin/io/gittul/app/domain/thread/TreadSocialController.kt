@@ -6,11 +6,7 @@ import io.gittul.app.domain.thread.dto.ThreadFeedResponse
 import io.gittul.app.infra.auth.aop.AccessGuard
 import io.gittul.app.infra.auth.aop.AuthContext
 import io.gittul.core.global.page.PageQuery
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @AccessGuard
 @RestController
@@ -23,7 +19,7 @@ class TreadSocialController(
 
 
     @GetMapping("/following")
-    fun getFollowingPosts(
+    fun getFollowingThreads(
         page: PageQuery
     ): List<ThreadFeedResponse> {
         val user = AuthContext.getUser()
@@ -31,7 +27,7 @@ class TreadSocialController(
     }
 
     @GetMapping("/bookmark")
-    fun getBookmarkedPosts(
+    fun getBookmarkedThreads(
         page: PageQuery
     ): List<ThreadFeedResponse> {
         val user = AuthContext.getUser()
@@ -39,13 +35,13 @@ class TreadSocialController(
     }
 
     @PostMapping("/{id}/like")
-    fun likePost(@PathVariable id: Long) {
+    fun likeThread(@PathVariable id: Long) {
         val user = AuthContext.getUser()
         likeService.likeThread(user, id)
     }
 
     @PostMapping("/{id}/unlike")
-    fun unLikePost(@PathVariable id: Long) {
+    fun unLikeThread(@PathVariable id: Long) {
         val user = AuthContext.getUser()
         likeService.unLikeThread(user, id)
     }

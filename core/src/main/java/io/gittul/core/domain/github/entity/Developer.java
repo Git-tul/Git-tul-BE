@@ -9,8 +9,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,6 +22,4 @@ public class Developer extends EntityTimeStamp {
     private Integer totalStars;
 
     private Integer totalForks;
-
-    private LocalDateTime lastUpdatedAt;
 }

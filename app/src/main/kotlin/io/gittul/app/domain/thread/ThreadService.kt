@@ -58,8 +58,8 @@ class ThreadService(
         )
         thread.addTag(tagService.getOrCreate(request.tags))
 
-        val savedPost = threadRepository.save(thread)
-        return ThreadDetailResponse.of(savedPost, currentUser)
+        val savedThread = threadRepository.save(thread)
+        return ThreadDetailResponse.of(savedThread, currentUser)
     }
 
     fun createThreadFromSummary(
@@ -76,8 +76,8 @@ class ThreadService(
         )
         thread.addTag(tagService.getOrCreate(summary.tags))
 
-        val savedPost = threadRepository.save(thread)
-        return ThreadFeedResponse.ofNew(savedPost)
+        val savedThread = threadRepository.save(thread)
+        return ThreadFeedResponse.ofNew(savedThread)
     }
 
     @Transactional

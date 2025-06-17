@@ -32,7 +32,7 @@ public class UserDetails {
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<userLikeThread> likedPosts = new HashSet<>();
+    private Set<userLikeThread> likedThreads = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<UserLikeComment> likedComments = new HashSet<>();

@@ -4,7 +4,7 @@ import io.gittul.core.global.validation.OptionalURL
 import jakarta.validation.constraints.Size
 
 data class CommentCreateRequest(
-    val postId: Long,
+    val threadId: Long,
 
     @field:Size(min = 1, max = 200)
     val content: String,

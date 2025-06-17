@@ -25,13 +25,13 @@ class LikeService(
 
         if (thread.isLikedBy(user)) throw CustomException(HttpStatus.CONFLICT, "이미 좋아요한 게시글입니다.")
 
-        user.details.likedPosts.add(like)
+        user.details.likedThreads.add(like)
         userRepository.save(user)
     }
 
     fun unLikeThread(user: User, threadId: Long) {
         user.details
-            .likedPosts
+            .likedThreads
             .removeIf { it.thread.threadId == threadId }
         userRepository.save(user)
     }

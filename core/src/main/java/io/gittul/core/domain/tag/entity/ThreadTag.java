@@ -18,15 +18,15 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "POST_TAG")
+@Table(name = "THREAD_TAG")
 public class ThreadTag extends EntityTimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "POST_TAG_ID", nullable = false)
+    @Column(name = "THREAD_TAG_ID", nullable = false)
     private Long threadTagId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "POST_ID", nullable = false)
+    @JoinColumn(name = "THREAD_ID", nullable = false)
     private Thread thread;
 
     @ManyToOne(fetch = FetchType.LAZY)

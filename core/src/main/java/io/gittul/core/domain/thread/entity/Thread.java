@@ -4,8 +4,8 @@ import io.gittul.core.domain.bookmark.entity.Bookmark;
 import io.gittul.core.domain.comment.entity.Comment;
 import io.gittul.core.domain.github.entity.GitHubRepository;
 import io.gittul.core.domain.like.entity.userLikeThread;
-import io.gittul.core.domain.tag.entity.ThreadTag;
 import io.gittul.core.domain.tag.entity.Tag;
+import io.gittul.core.domain.tag.entity.ThreadTag;
 import io.gittul.core.domain.user.entity.User;
 import io.gittul.core.global.jpa.EntityTimeStamp;
 import jakarta.persistence.CascadeType;
@@ -36,11 +36,11 @@ import java.util.Set;
 @Entity
 @Getter
 @Table(
-        name = "post",
+        name = "THREAD",
         indexes = {
-                @Index(name = "idx_post_user", columnList = "USER_ID"),
-                @Index(name = "idx_post_repo", columnList = "REPO_ID"),
-                @Index(name = "idx_post_created_at", columnList = "createdAt")
+                @Index(name = "idx_thread_user", columnList = "USER_ID"),
+                @Index(name = "idx_thread_repo", columnList = "REPO_ID"),
+                @Index(name = "idx_thread_created_at", columnList = "CREATED_AT")
         }
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -49,7 +49,7 @@ public class Thread extends EntityTimeStamp {
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "POST_ID", nullable = false)
+    @Column(name = "THREAD_ID", nullable = false)
     private Long threadId;
 
     @ManyToOne(fetch = FetchType.LAZY)

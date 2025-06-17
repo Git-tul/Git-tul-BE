@@ -26,7 +26,7 @@ public class Bookmark extends EntityTimeStamp {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "POST_ID")
+    @JoinColumn(name = "THREAD_ID")
     private Thread thread;
 
     public static Bookmark of(User user, Thread thread) {

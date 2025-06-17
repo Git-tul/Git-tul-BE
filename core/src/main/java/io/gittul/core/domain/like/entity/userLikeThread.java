@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "USER_LIKE_POST")
+@Table(name = "USER_LIKE_THREAD")
 public class userLikeThread extends EntityTimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,7 @@ public class userLikeThread extends EntityTimeStamp {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "POST_ID")
+    @JoinColumn(name = "THREAD_ID")
     private Thread thread;
 
     public static userLikeThread of(User user, Thread thread) {

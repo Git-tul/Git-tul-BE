@@ -17,7 +17,7 @@ class ThreadController(
 ) {
 
     @GetMapping
-    fun getAllPosts(
+    fun getAllThreads(
         page: PageQuery
     ): List<ThreadFeedResponse> {
         val user = AuthContext.getUser()
@@ -26,7 +26,7 @@ class ThreadController(
     }
 
     @GetMapping("/{id}")
-    fun getPost(
+    fun getThread(
         @PathVariable id: Long
     ): ThreadDetailResponse {
         val user = AuthContext.getUser()
@@ -35,7 +35,7 @@ class ThreadController(
     }
 
     @PostMapping
-    fun createPost(
+    fun createThread(
         @Valid @RequestBody request: NormalThreadCreateRequest
     ): ThreadDetailResponse {
         val user = AuthContext.getUser()
@@ -44,7 +44,7 @@ class ThreadController(
     }
 
     @DeleteMapping("/{id}")
-    fun deletePost(@PathVariable id: Long) {
+    fun deleteThread(@PathVariable id: Long) {
         val user = AuthContext.getUser()
         threadService.deleteThread(user, id)
     }

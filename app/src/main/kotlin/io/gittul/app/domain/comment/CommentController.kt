@@ -22,9 +22,9 @@ class CommentController(
         @RequestBody request: @Valid CommentCreateRequest
     ): CommentResponse? {
         val user = AuthContext.getUser();
-        val comment = commentService.createComment(request, request.postId, user)
+        val comment = commentService.createComment(request, request.threadId, user)
 
-        logger().info("[댓글 작성] {} 게시글에 {} 가 {} 댓글 작성", request.postId, user.email, comment.commentId)
+        logger().info("[댓글 작성] {} 게시글에 {} 가 {} 댓글 작성", request.threadId, user.email, comment.commentId)
         return CommentResponse.ofAndTo(comment, user)
     }
 

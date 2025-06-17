@@ -24,9 +24,8 @@ data class ThreadFeedResponse(
     val tags: List<String>
 ) {
     companion object {
-        // Todo. 명칭 수정 post -> thread
         fun ofAndTo(thread: Thread, requestingUser: User?): ThreadFeedResponse {
-            return createPostFeedResponse(
+            return createThreadFeedResponse(
                 thread,
                 thread.isLikedBy(requestingUser),
                 thread.isBookmarkedBy(requestingUser)
@@ -34,10 +33,10 @@ data class ThreadFeedResponse(
         }
 
         fun ofNew(thread: Thread): ThreadFeedResponse {
-            return createPostFeedResponse(thread, false, false)
+            return createThreadFeedResponse(thread, false, false)
         }
 
-        private fun createPostFeedResponse(
+        private fun createThreadFeedResponse(
             thread: Thread,
             isLiked: Boolean,
             isBookmarked: Boolean

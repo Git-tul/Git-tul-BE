@@ -28,7 +28,7 @@ public class Comment extends EntityTimeStamp {
     private Long commentId;
 
     @ManyToOne
-    @JoinColumn(name = "POST_ID")
+    @JoinColumn(name = "THREAD_ID")
     private Thread thread;
 
     @ManyToOne
