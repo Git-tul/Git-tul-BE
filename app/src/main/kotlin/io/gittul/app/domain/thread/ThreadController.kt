@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/posts")
 class ThreadController(
-    private val treadService: TreadService
+    private val threadService: ThreadService
 ) {
 
     @GetMapping
@@ -22,7 +22,7 @@ class ThreadController(
     ): List<ThreadFeedResponse> {
         val user = AuthContext.getUser()
 
-        return treadService.getAllPosts(user, page.toRequest())
+        return threadService.getAllTreads(user, page.toRequest())
     }
 
     @GetMapping("/{id}")
@@ -31,7 +31,7 @@ class ThreadController(
     ): ThreadDetailResponse {
         val user = AuthContext.getUser()
 
-        return treadService.getPost(user, id)
+        return threadService.getThread(user, id)
     }
 
     @PostMapping
@@ -40,12 +40,12 @@ class ThreadController(
     ): ThreadDetailResponse {
         val user = AuthContext.getUser()
 
-        return treadService.createPost(request, user)
+        return threadService.createThread(request, user)
     }
 
     @DeleteMapping("/{id}")
     fun deletePost(@PathVariable id: Long) {
         val user = AuthContext.getUser()
-        treadService.deletePost(user, id)
+        threadService.deleteThread(user, id)
     }
 }

@@ -2,7 +2,7 @@ package io.gittul.app.domain.thread.dto
 
 import io.gittul.app.domain.comment.dto.CommentResponse
 import io.gittul.app.domain.user.dto.UserProfileResponse
-import io.gittul.core.domain.post.entity.Post
+import io.gittul.core.domain.thread.entity.Thread
 import io.gittul.core.domain.user.entity.User
 import java.math.BigInteger
 
@@ -24,23 +24,23 @@ data class ThreadDetailResponse(
     val comments: List<CommentResponse>
 ) {
     companion object {
-        fun of(post: Post, requestingUser: User): ThreadDetailResponse {
+        fun of(thread: Thread, requestingUser: User): ThreadDetailResponse {
             return ThreadDetailResponse(
-                id = BigInteger.valueOf(post.postId),
-                title = post.title,
-                content = post.content,
-                image = post.imageUrl,
-                createdAt = post.createdAt.toString(),
-                updatedAt = post.updatedAt.toString(),
-                writer = UserProfileResponse.of(post.user),
-                isFollowed = requestingUser.isFollowing(post.user),
-                isLiked = post.isLikedBy(requestingUser),
-                isBookmarked = post.isBookmarkedBy(requestingUser),
-                likeCount = post.likeCount,
-                bookmarkCount = post.bookmarkCount,
-                viewCount = post.viewCount,
-                tags = post.tags.map { it.tagName },
-                comments = post.comments.mapNotNull { CommentResponse.ofAndTo(it, post.user) }
+                id = BigInteger.valueOf(thread.threadId),
+                title = thread.title,
+                content = thread.content,
+                image = thread.imageUrl,
+                createdAt = thread.createdAt.toString(),
+                updatedAt = thread.updatedAt.toString(),
+                writer = UserProfileResponse.of(thread.user),
+                isFollowed = requestingUser.isFollowing(thread.user),
+                isLiked = thread.isLikedBy(requestingUser),
+                isBookmarked = thread.isBookmarkedBy(requestingUser),
+                likeCount = thread.likeCount,
+                bookmarkCount = thread.bookmarkCount,
+                viewCount = thread.viewCount,
+                tags = thread.tags.map { it.tagName },
+                comments = thread.comments.mapNotNull { CommentResponse.ofAndTo(it, thread.user) }
             )
         }
     }

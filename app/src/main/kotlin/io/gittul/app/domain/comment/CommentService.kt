@@ -18,21 +18,21 @@ class CommentService(
     @Transactional
     fun createComment(
         request: CommentCreateRequest,
-        postId: Long,
+        threadId: Long,
         user: User?
     ): Comment {
-        val post = threadRepository.findById(postId)
+        val thread = threadRepository.findById(threadId)
             .orElseThrow {
                 CustomException(
                     HttpStatus.NOT_FOUND,
                     "게시글을 찾을 수 없습니다."
                 )
-            } // Todo. 문법?
+            }
 
 
-        val comment = Comment.of(request.content, request.image, user, post)
-        post.comments.add(comment)
-        threadRepository.saveAndFlush(post)
+        val comment = Comment.of(request.content, request.image, user, thread)
+        thread.comments.add(comment)
+        threadRepository.saveAndFlush(thread)
 
         return comment
     }
@@ -42,13 +42,13 @@ class CommentService(
             CustomException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다.")
         }
 
-        val post = requestingComment.post
+        val thread = requestingComment.thread
 
         if (requestingComment.user.userId != user.userId) {
             throw CustomException(HttpStatus.FORBIDDEN, "댓글을 삭제할 권한이 없습니다.")
         }
 
-        post.comments.remove(requestingComment)
-        threadRepository.save(post)
+        thread.comments.remove(requestingComment)
+        threadRepository.save(thread)
     }
 }

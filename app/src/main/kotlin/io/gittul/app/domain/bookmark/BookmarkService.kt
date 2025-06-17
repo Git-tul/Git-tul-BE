@@ -14,20 +14,20 @@ class BookmarkService(
     private val userRepository: UserRepository
 ) {
 
-    fun addBookmark(user: User, postId: Long) {
-        val post = threadRepository.getReferenceById(postId)
-        val bookmark = Bookmark.of(user, post)
+    fun addBookmark(user: User, threadId: Long) {
+        val thread = threadRepository.getReferenceById(threadId)
+        val bookmark = Bookmark.of(user, thread)
 
-        if (post.isBookmarkedBy(user)) throw CustomException(HttpStatus.CONFLICT, "이미 북마크한 게시글입니다.")
+        if (thread.isBookmarkedBy(user)) throw CustomException(HttpStatus.CONFLICT, "이미 북마크한 게시글입니다.")
 
         user.details.bookmarks.add(bookmark)
         userRepository.save(user)
     }
 
-    fun removeBookmark(user: User, postId: Long) {
+    fun removeBookmark(user: User, threadId: Long) {
         user.details
             .bookmarks
-            .removeIf { it.post.postId == postId }
+            .removeIf { it.thread.threadId == threadId }
 
         userRepository.save(user)
     }

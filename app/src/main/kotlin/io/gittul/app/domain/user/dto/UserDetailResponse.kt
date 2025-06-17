@@ -17,7 +17,7 @@ data class UserDetailResponse(
         fun of(user: User): UserDetailResponse {
             val details = user.details
 
-            val likeCount = details.posts.stream()
+            val likeCount = details.threads.stream()
                 .mapToInt { it.likes.size }
                 .sum()
 

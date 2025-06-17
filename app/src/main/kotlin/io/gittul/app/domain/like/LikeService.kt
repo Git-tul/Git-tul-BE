@@ -4,8 +4,8 @@ import io.gittul.app.domain.comment.CommentRepository
 import io.gittul.app.domain.thread.repository.ThreadRepository
 import io.gittul.app.domain.user.UserRepository
 import io.gittul.core.domain.like.entity.UserLikeComment
-import io.gittul.core.domain.like.entity.UserLikePost
-import io.gittul.core.domain.post.entity.Post
+import io.gittul.core.domain.like.entity.userLikeThread
+import io.gittul.core.domain.thread.entity.Thread
 import io.gittul.core.domain.user.entity.User
 import io.gittul.core.global.exception.CustomException
 import org.springframework.http.HttpStatus
@@ -19,20 +19,20 @@ class LikeService(
 ) {
 
 
-    fun likePost(user: User, postId: Long) {
-        val post: Post = threadRepository.getReferenceById(postId)
-        val like: UserLikePost = UserLikePost.of(user, post)
+    fun likeThread(user: User, threadId: Long) {
+        val thread: Thread = threadRepository.getReferenceById(threadId)
+        val like: userLikeThread = userLikeThread.of(user, thread)
 
-        if (post.isLikedBy(user)) throw CustomException(HttpStatus.CONFLICT, "이미 좋아요한 게시글입니다.")
+        if (thread.isLikedBy(user)) throw CustomException(HttpStatus.CONFLICT, "이미 좋아요한 게시글입니다.")
 
         user.details.likedPosts.add(like)
         userRepository.save(user)
     }
 
-    fun unLikePost(user: User, postId: Long) {
+    fun unLikeThread(user: User, threadId: Long) {
         user.details
             .likedPosts
-            .removeIf { it.post.postId == postId }
+            .removeIf { it.thread.threadId == threadId }
         userRepository.save(user)
     }
 

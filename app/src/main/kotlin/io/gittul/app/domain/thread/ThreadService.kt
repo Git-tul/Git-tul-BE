@@ -7,7 +7,7 @@ import io.gittul.app.domain.thread.dto.ThreadFeedResponse
 import io.gittul.app.domain.thread.repository.ThreadQueryRepository
 import io.gittul.app.domain.thread.repository.ThreadRepository
 import io.gittul.core.domain.github.entity.GitHubRepository
-import io.gittul.core.domain.post.entity.Post
+import io.gittul.core.domain.thread.entity.Thread
 import io.gittul.core.domain.user.entity.User
 import io.gittul.core.global.exception.CustomException
 import io.gittul.infra.summery.dto.RepositorySummary
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.function.Supplier
 
 @Service
-class TreadService(
+class ThreadService(
     private val threadRepository: ThreadRepository,
     private val threadQueryRepository: ThreadQueryRepository,
     private val tagService: TagService
@@ -26,8 +26,8 @@ class TreadService(
 
     @Transactional(readOnly = true)
     fun getAllTreads(user: User, page: PageRequest): List<ThreadFeedResponse> {
-        val posts = threadQueryRepository.findAllWithDetails(page)
-        return posts.map { ThreadFeedResponse.ofAndTo(it, user) }
+        val threads = threadQueryRepository.findAllWithDetails(page)
+        return threads.map { ThreadFeedResponse.ofAndTo(it, user) }
     }
 
     @Transactional(readOnly = true)
@@ -37,28 +37,28 @@ class TreadService(
 
     @Transactional(readOnly = true)
     fun getBookmarkedThreads(user: User, page: PageRequest): List<ThreadFeedResponse> {
-        val posts = threadQueryRepository.findAllBookmarkedByUserId(user.userId, page)
-        return posts.map { ThreadFeedResponse.ofAndTo(it, user) }
+        val threads = threadQueryRepository.findAllBookmarkedByUserId(user.userId, page)
+        return threads.map { ThreadFeedResponse.ofAndTo(it, user) }
     }
 
     @Transactional(readOnly = true)
     fun getFollowingThreads(user: User, page: PageRequest): List<ThreadFeedResponse> {
         val followingIds = user.details.followings.map { it.followee.userId }
-        val posts = threadQueryRepository.findByAuthorIds(followingIds, page)
-        return posts.map { ThreadFeedResponse.ofAndTo(it, user) }
+        val threads = threadQueryRepository.findByAuthorIds(followingIds, page)
+        return threads.map { ThreadFeedResponse.ofAndTo(it, user) }
     }
 
     @Transactional
     fun createThread(request: NormalThreadCreateRequest, currentUser: User): ThreadDetailResponse {
-        val post = Post.of(
+        val thread = Thread.of(
             currentUser,
             request.title,
             request.content,
             request.image
         )
-        post.addTag(tagService.getOrCreate(request.tags))
+        thread.addTag(tagService.getOrCreate(request.tags))
 
-        val savedPost = threadRepository.save(post)
+        val savedPost = threadRepository.save(thread)
         return ThreadDetailResponse.of(savedPost, currentUser)
     }
 
@@ -67,31 +67,31 @@ class TreadService(
         summary: RepositorySummary,
         admin: User
     ): ThreadFeedResponse {
-        val post = Post.of(
+        val thread = Thread.of(
             admin,
             summary.title,
             summary.description,
             null, // Todo. 리드미 등 이미지
             repository,
         )
-        post.addTag(tagService.getOrCreate(summary.tags))
+        thread.addTag(tagService.getOrCreate(summary.tags))
 
-        val savedPost = threadRepository.save(post)
+        val savedPost = threadRepository.save(thread)
         return ThreadFeedResponse.ofNew(savedPost)
     }
 
     @Transactional
     fun deleteThread(user: User, id: Long) {
-        val post = getOrElseThrow(id)
+        val thread = getOrElseThrow(id)
 
-        if (post.user.userId != user.userId) {
+        if (thread.user.userId != user.userId) {
             throw CustomException(HttpStatus.FORBIDDEN, "글을 삭제할 권한이 없습니다.")
         }
 
-        threadRepository.delete(post)
+        threadRepository.delete(thread)
     }
 
-    private fun getOrElseThrow(id: Long): Post {
+    private fun getOrElseThrow(id: Long): Thread {
         return threadQueryRepository.findByIdWithDetails(id)
             .orElseThrow(Supplier { CustomException(HttpStatus.NOT_FOUND, "글을 찾을 수 없습니다.") })
     }

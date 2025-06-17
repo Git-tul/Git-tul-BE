@@ -1,6 +1,6 @@
 package io.gittul.core.domain.bookmark.entity;
 
-import io.gittul.core.domain.post.entity.Post;
+import io.gittul.core.domain.thread.entity.Thread;
 import io.gittul.core.domain.user.entity.User;
 import io.gittul.core.global.jpa.EntityTimeStamp;
 import jakarta.persistence.Entity;
@@ -27,12 +27,12 @@ public class Bookmark extends EntityTimeStamp {
 
     @ManyToOne
     @JoinColumn(name = "POST_ID")
-    private Post post;
+    private Thread thread;
 
-    public static Bookmark of(User user, Post post) {
+    public static Bookmark of(User user, Thread thread) {
         Bookmark bookmark = new Bookmark();
         bookmark.user = user;
-        bookmark.post = post;
+        bookmark.thread = thread;
         return bookmark;
     }
 }

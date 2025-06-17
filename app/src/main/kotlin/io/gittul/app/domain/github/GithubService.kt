@@ -1,7 +1,7 @@
 package io.gittul.app.domain.github
 
 import io.gittul.app.domain.github.document.GenerateTrendingRepoResult
-import io.gittul.app.domain.thread.TreadService
+import io.gittul.app.domain.thread.ThreadService
 import io.gittul.app.domain.thread.dto.ThreadFeedResponse
 import io.gittul.app.global.atEndOfDay
 import io.gittul.app.global.logger
@@ -24,7 +24,7 @@ class GithubService( // Todo. 정리
     private val apiService: GitHubApiService,
     private val trendingApiService: GithubTrendingApiService,
     private val summaryService: SummaryService,
-    private val treadService: TreadService,
+    private val threadService: ThreadService,
     private val repository: GitHubRepositoryRepository,
     private val mongoService: MongoService
 ) {
@@ -52,7 +52,7 @@ class GithubService( // Todo. 정리
 
         val newRepositories = getNewRepositoryInfos(trendingRepositories)
         val summariesAndRepos = generateRepositorySummaries(newRepositories, errorMessages)
-        successResults.addAll(createPostsFromSummaries(summariesAndRepos, admin))
+        successResults.addAll(createThreadsFromSummaries(summariesAndRepos, admin))
 
         return ProcessingResult(successResults, errorMessages)
     }
@@ -78,12 +78,12 @@ class GithubService( // Todo. 정리
             .filterNotNull()
     }
 
-    private fun createPostsFromSummaries(
+    private fun createThreadsFromSummaries(
         summariesAndRepos: List<SummaryAndRepository>,
         admin: User
     ): List<ThreadFeedResponse> {
         return summariesAndRepos.stream()
-            .map { treadService.createPostFromSummary(it.repository, it.summary, admin) }
+            .map { threadService.createThreadFromSummary(it.repository, it.summary, admin) }
             .toList()
     }
 

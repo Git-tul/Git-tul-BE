@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/posts")
 class TreadSocialController(
-    private val treadService: TreadService,
+    private val threadService: ThreadService,
     private val likeService: LikeService,
     private val bookmarkService: BookmarkService
 ) {
@@ -27,7 +27,7 @@ class TreadSocialController(
         page: PageQuery
     ): List<ThreadFeedResponse> {
         val user = AuthContext.getUser()
-        return treadService.getFollowingPosts(user, page.toRequest())
+        return threadService.getFollowingThreads(user, page.toRequest())
     }
 
     @GetMapping("/bookmark")
@@ -35,19 +35,19 @@ class TreadSocialController(
         page: PageQuery
     ): List<ThreadFeedResponse> {
         val user = AuthContext.getUser()
-        return treadService.getBookmarkedPosts(user, page.toRequest())
+        return threadService.getBookmarkedThreads(user, page.toRequest())
     }
 
     @PostMapping("/{id}/like")
     fun likePost(@PathVariable id: Long) {
         val user = AuthContext.getUser()
-        likeService.likePost(user, id)
+        likeService.likeThread(user, id)
     }
 
     @PostMapping("/{id}/unlike")
     fun unLikePost(@PathVariable id: Long) {
         val user = AuthContext.getUser()
-        likeService.unLikePost(user, id)
+        likeService.unLikeThread(user, id)
     }
 
     @PostMapping("/{id}/bookmark")

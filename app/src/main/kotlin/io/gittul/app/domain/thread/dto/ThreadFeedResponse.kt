@@ -2,7 +2,7 @@ package io.gittul.app.domain.thread.dto
 
 import io.gittul.app.domain.comment.dto.CommentResponse
 import io.gittul.app.domain.user.dto.UserProfileResponse
-import io.gittul.core.domain.post.entity.Post
+import io.gittul.core.domain.thread.entity.Thread
 import io.gittul.core.domain.user.entity.User
 
 data class ThreadFeedResponse(
@@ -25,7 +25,7 @@ data class ThreadFeedResponse(
 ) {
     companion object {
         // Todo. 명칭 수정 post -> thread
-        fun ofAndTo(thread: Post, requestingUser: User?): ThreadFeedResponse {
+        fun ofAndTo(thread: Thread, requestingUser: User?): ThreadFeedResponse {
             return createPostFeedResponse(
                 thread,
                 thread.isLikedBy(requestingUser),
@@ -33,12 +33,12 @@ data class ThreadFeedResponse(
             )
         }
 
-        fun ofNew(thread: Post): ThreadFeedResponse {
+        fun ofNew(thread: Thread): ThreadFeedResponse {
             return createPostFeedResponse(thread, false, false)
         }
 
         private fun createPostFeedResponse(
-            thread: Post,
+            thread: Thread,
             isLiked: Boolean,
             isBookmarked: Boolean
         ): ThreadFeedResponse {
@@ -53,7 +53,7 @@ data class ThreadFeedResponse(
                 description = thread.content,
                 createdAt = thread.createdAt.toString(),
                 updatedAt = thread.updatedAt.toString(),
-                id = thread.postId,
+                id = thread.threadId,
                 starCount = thread.repository?.starCount ?: 0,
                 forkCount = thread.repository?.forkCount ?: 0,  // Todo. 가독성 개선
                 viewCount = thread.viewCount,

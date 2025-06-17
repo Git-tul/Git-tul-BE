@@ -4,8 +4,8 @@ import io.gittul.core.domain.bookmark.entity.Bookmark;
 import io.gittul.core.domain.comment.entity.Comment;
 import io.gittul.core.domain.follow.entity.UserFollow;
 import io.gittul.core.domain.like.entity.UserLikeComment;
-import io.gittul.core.domain.like.entity.UserLikePost;
-import io.gittul.core.domain.post.entity.Post;
+import io.gittul.core.domain.like.entity.userLikeThread;
+import io.gittul.core.domain.thread.entity.Thread;
 import io.gittul.core.domain.tag.entity.UserInterest;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
@@ -26,13 +26,13 @@ import java.util.Set;
 public class UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Post> posts = new ArrayList<>();
+    private List<Thread> threads = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<UserLikePost> likedPosts = new HashSet<>();
+    private Set<userLikeThread> likedPosts = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<UserLikeComment> likedComments = new HashSet<>();

@@ -1,14 +1,15 @@
-package io.gittul.core.domain.post.entity;
+package io.gittul.core.domain.thread.entity;
 
 import io.gittul.core.domain.bookmark.entity.Bookmark;
 import io.gittul.core.domain.comment.entity.Comment;
 import io.gittul.core.domain.github.entity.GitHubRepository;
-import io.gittul.core.domain.like.entity.UserLikePost;
-import io.gittul.core.domain.tag.entity.PostTag;
+import io.gittul.core.domain.like.entity.userLikeThread;
+import io.gittul.core.domain.tag.entity.ThreadTag;
 import io.gittul.core.domain.tag.entity.Tag;
 import io.gittul.core.domain.user.entity.User;
 import io.gittul.core.global.jpa.EntityTimeStamp;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -43,12 +44,13 @@ import java.util.Set;
         }
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post extends EntityTimeStamp {
+public class Thread extends EntityTimeStamp {
 
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postId;
+    @Column(name = "POST_ID", nullable = false)
+    private Long threadId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID", nullable = false)
@@ -65,21 +67,21 @@ public class Post extends EntityTimeStamp {
     private int viewCount;
 
     @BatchSize(size = 50)
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "thread", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-    private Set<UserLikePost> likes = new HashSet<>();
+    @OneToMany(mappedBy = "thread", fetch = FetchType.LAZY)
+    private Set<userLikeThread> likes = new HashSet<>();
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "thread", fetch = FetchType.LAZY)
     private Set<Bookmark> bookmarks = new HashSet<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<PostTag> postTags = new ArrayList<>();
+    @OneToMany(mappedBy = "thread", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ThreadTag> threadTags = new ArrayList<>();
 
     public void addTag(Tag tag) {
-        PostTag postTag = new PostTag(this, tag);
-        postTags.add(postTag);
+        ThreadTag threadTag = new ThreadTag(this, tag);
+        threadTags.add(threadTag);
     }
 
     public int getLikeCount() {
@@ -110,26 +112,26 @@ public class Post extends EntityTimeStamp {
                 .anyMatch(bookmark -> bookmark.getUser().getUserId().equals(requestingUser.getUserId()));
     }
 
-    public static Post of(User user,
-                          String title,
-                          String content,
-                          String imageUrl) {
-        Post post = new Post();
-        post.user = user;
-        post.title = title;
-        post.content = content;
-        post.imageUrl = imageUrl;
-        return post;
+    public static Thread of(User user,
+                            String title,
+                            String content,
+                            String imageUrl) {
+        Thread thread = new Thread();
+        thread.user = user;
+        thread.title = title;
+        thread.content = content;
+        thread.imageUrl = imageUrl;
+        return thread;
     }
 
-    public static Post of(User user,
-                          String title,
-                          String content,
-                          String imageUrl,
-                          GitHubRepository repository) {
-        Post post = of(user, title, content, imageUrl);
-        post.repository = repository;
-        return post;
+    public static Thread of(User user,
+                            String title,
+                            String content,
+                            String imageUrl,
+                            GitHubRepository repository) {
+        Thread thread = of(user, title, content, imageUrl);
+        thread.repository = repository;
+        return thread;
     }
 
 
@@ -138,12 +140,12 @@ public class Post extends EntityTimeStamp {
     }
 
     public void removeTag(Tag tag) {
-        postTags.removeIf(postTag -> postTag.getTag().equals(tag));
+        threadTags.removeIf(threadTag -> threadTag.getTag().equals(tag));
     }
 
     public List<Tag> getTags() {
-        return postTags.stream()
-                .map(PostTag::getTag)
+        return threadTags.stream()
+                .map(ThreadTag::getTag)
                 .toList();
     }
 }
