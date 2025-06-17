@@ -26,6 +26,18 @@ class ThreadQueryRepositoryImpl(
         val postTag = QPostTag.postTag
         val tag = QTag.tag
 
+        // 1. 페이징 위한 ID 목록만 추출
+        val postIds = queryFactory
+            .select(post.postId)
+            .from(post)
+            .orderBy(post.createdAt.desc())
+            .offset(page.offset)
+            .limit(page.pageSize.toLong())
+            .fetch()
+
+        if (postIds.isEmpty()) return emptyList()
+
+        // 2. ID 기반 fetch join 조회
         return queryFactory
             .selectFrom(post)
             .leftJoin(post.user, user).fetchJoin()
@@ -34,11 +46,9 @@ class ThreadQueryRepositoryImpl(
             .leftJoin(post.bookmarks, bookmarks).fetchJoin()
             .leftJoin(post.postTags, postTag).fetchJoin()
             .leftJoin(postTag.tag, tag).fetchJoin()
+            .where(post.postId.`in`(postIds))
             .orderBy(post.createdAt.desc())
-            .offset(page.offset)
-            .limit(page.pageSize.toLong())
             .distinct()
             .fetch()
     }
-
 }
