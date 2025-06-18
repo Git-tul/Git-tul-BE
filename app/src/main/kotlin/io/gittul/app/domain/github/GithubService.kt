@@ -5,7 +5,7 @@ import io.gittul.app.domain.thread.ThreadService
 import io.gittul.app.domain.thread.dto.ThreadFeedResponse
 import io.gittul.app.global.atEndOfDay
 import io.gittul.app.global.logger
-import io.gittul.app.infra.MongoService
+import io.gittul.app.infra.record.MongoService
 import io.gittul.core.domain.github.entity.GitHubRepository
 import io.gittul.core.domain.user.entity.User
 import io.gittul.infra.github.GitHubApiService

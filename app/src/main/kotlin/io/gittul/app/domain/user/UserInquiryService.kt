@@ -1,6 +1,6 @@
 package io.gittul.app.domain.user
 
-import io.gittul.app.infra.auth.jwt.TokenUserInfo
+import io.gittul.app.infra.auth.dto.TokenUserInfo
 import io.gittul.core.domain.user.entity.User
 import org.springframework.stereotype.Service
 import java.util.function.Supplier

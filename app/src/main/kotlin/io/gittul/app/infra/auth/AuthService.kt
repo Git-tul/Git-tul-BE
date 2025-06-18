@@ -4,9 +4,11 @@ import io.gittul.app.domain.user.UserRepository
 import io.gittul.app.domain.user.exception.UserException
 import io.gittul.app.infra.auth.dto.LoginRequest
 import io.gittul.app.infra.auth.dto.SignupRequest
+import io.gittul.app.infra.auth.dto.TokenResponse
 import io.gittul.app.infra.auth.exception.AuthenticationException
-import io.gittul.app.infra.auth.jwt.JwtProvider
-import io.gittul.app.infra.auth.jwt.TokenUserInfo
+import io.gittul.app.infra.auth.jwt.AccessTokenProvider
+import io.gittul.app.infra.auth.jwt.RefreshTokenProvider
+import io.gittul.app.infra.auth.dto.TokenUserInfo
 import io.gittul.app.infra.auth.oauth.dto.OauthUserInfo
 import io.gittul.app.infra.auth.oauth.provider.OauthProvider
 import io.gittul.app.infra.auth.oauth.provider.OauthProviderName
@@ -17,7 +19,8 @@ import org.springframework.stereotype.Service
 @Service
 class AuthService(
     private val userRepository: UserRepository,
-    private val jwtProvider: JwtProvider,
+    private val accessTokenProvider: AccessTokenProvider,
+    private val refreshTokenProvider: RefreshTokenProvider,
     oauthProviderList: List<OauthProvider>
 ) {
 
@@ -25,7 +28,7 @@ class AuthService(
     private val oauthProviders: Map<OauthProviderName, OauthProvider> =
         oauthProviderList.associateBy { it.providerName }
 
-    fun login(loginRequest: LoginRequest): String {
+    fun login(loginRequest: LoginRequest): TokenResponse {
         val user: User = userRepository.findByEmail(loginRequest.email)
             ?: throw AuthenticationException.USER_NOT_FOUND
 
@@ -43,7 +46,10 @@ class AuthService(
             throw AuthenticationException.WRONG_PASSWORD
         }
 
-        return jwtProvider.createToken(TokenUserInfo.of(user))
+        return TokenResponse(
+            accessTokenProvider.createToken(TokenUserInfo.of(user)),
+            refreshTokenProvider.createToken(TokenUserInfo.of(user))
+        )
     }
 
     fun signup(signupRequest: SignupRequest) {
@@ -65,6 +71,11 @@ class AuthService(
         userRepository.save(user)
     }
 
+    fun refreshToken(token: String): String {
+        val userInfo = accessTokenProvider.validateToken(token)
+        return accessTokenProvider.createToken(userInfo)
+    }
+
     fun loginWithOauth(
         provider: OauthProviderName,
         code: String,
@@ -73,10 +84,10 @@ class AuthService(
         val userInfo = getOauthUserInfo(provider, code, origin)
 
         userRepository.findByOauthInfo(userInfo.toOauthInfo())
-            ?.let { user -> return jwtProvider.createToken(TokenUserInfo.of(user)) }
+            ?.let { user -> return accessTokenProvider.createToken(TokenUserInfo.of(user)) }
 
         val user = createNewUser(userInfo)
-        return jwtProvider.createToken(TokenUserInfo.of(user))
+        return accessTokenProvider.createToken(TokenUserInfo.of(user))
     }
 
     private fun getOauthUserInfo(provider: OauthProviderName, code: String, origin: String): OauthUserInfo {

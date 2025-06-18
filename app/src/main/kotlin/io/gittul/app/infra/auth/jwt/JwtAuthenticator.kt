@@ -9,22 +9,37 @@ import org.springframework.stereotype.Component
 @Component
 class JwtAuthenticator(
     private val jwtProvider: JwtProvider,
-    private val userService: UserInquiryService
+    private val userService: UserInquiryService,
+    private val accessTokenProvider: AccessTokenProvider,
+    private val refreshTokenProvider: RefreshTokenProvider
 ) {
 
     fun authenticate(request: HttpServletRequest): User {
-        val authorizationHeader: String = request.getHeader("Authorization")
-            ?: throw AuthenticationException.TOKEN_NOT_FOUND
-
-        val token: String = extractToken(authorizationHeader)
-
-        val tokenUserInfo = jwtProvider.validateToken(token)
-        return userService.getUserFromTokenInfo(tokenUserInfo)
+        val token = extractToken(request) ?: throw AuthenticationException.INVALID_TOKEN
+        return accessTokenProvider.validateToken(token)
     }
 
-    private fun extractToken(header: String): String {
-        if (!header.startsWith("Bearer ")) throw AuthenticationException.INVALID_GRANT_TYPE
+    fun extractRefreshToken(request: HttpServletRequest): String? {
+        return request.cookies?.find { it.name == "refresh_token" }?.value
+    }
 
-        return header.substring(7)
+    private fun extractToken(request: HttpServletRequest): String? {
+        // 1. 쿠키에서 토큰 확인
+        val cookies = request.cookies
+        if (cookies != null) {
+            for (cookie in cookies) {
+                if (cookie.name == "access_token") {
+                    return cookie.value
+                }
+            }
+        }
+
+        // 2. Authorization 헤더에서 토큰 확인
+        val authHeader = request.getHeader("Authorization")
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7)
+        }
+
+        return null
     }
 }

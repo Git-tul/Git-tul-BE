@@ -1,4 +1,4 @@
-package io.gittul.app.infra.auth.jwt
+package io.gittul.app.infra.auth.dto
 
 import io.gittul.core.domain.user.entity.Role
 import io.gittul.core.domain.user.entity.User
