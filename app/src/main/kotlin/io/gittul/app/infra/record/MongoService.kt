@@ -1,11 +1,9 @@
-package io.gittul.app.infra
+package io.gittul.app.infra.record
 
-import io.gittul.app.global.atEndOfDay
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Service
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Service
