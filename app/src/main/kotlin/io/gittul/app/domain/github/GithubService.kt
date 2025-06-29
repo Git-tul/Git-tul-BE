@@ -31,7 +31,7 @@ class GithubService( // Todo. 정리
 
     @Transactional
     fun getDailyTrendingRepositoriesSummery(admin: User): List<ThreadFeedResponse> {
-        val trendingRepositories = trendingApiService.dailyTrendingRepositories
+        val trendingRepositories = trendingApiService.dailyTrendingRepositories()
         val processingResult = processTrendingRepositories(trendingRepositories, admin)
 
         saveGeneratingResult(processingResult)
@@ -82,10 +82,13 @@ class GithubService( // Todo. 정리
         summariesAndRepos: List<SummaryAndRepository>,
         admin: User
     ): List<ThreadFeedResponse> {
-        return summariesAndRepos.stream()
-            .map { threadService.createThreadFromSummary(it.repository, it.summary, admin) }
-            .toList()
+        val results = mutableListOf<ThreadFeedResponse>()
+        summariesAndRepos.forEach {
+            results.add(threadService.createThreadFromSummary(it.repository, it.summary, admin))
+        }
+        return results
     }
+
 
     private fun saveGeneratingResult(result: ProcessingResult) {
         mongoService.save(GenerateTrendingRepoResult.of(result.successResults, result.errorMessages))
@@ -127,13 +130,13 @@ class GithubService( // Todo. 정리
     private fun getNewRepositoryInfos(trendingRepositories: List<TrendingRepositoryApiResponse>)
             : List<RepositoryInfo> {
         return trendingRepositories.parallelStream()
+            .filter { isNew(it.url) }
             .map { apiService.getRepositoryInfo(it.author, it.name) }
             .filter { Objects.nonNull(it) }
-            .filter { isNew(it) }
             .toList()
     }
 
-    private fun isNew(info: RepositoryInfo): Boolean {
-        return repository.findByRepoUrl(info.basicInfo.url).isEmpty
+    private fun isNew(url: String): Boolean {
+        return repository.findByRepoUrl(url).isEmpty
     }
 }

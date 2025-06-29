@@ -11,12 +11,11 @@ class GithubTrendingApiService(
     private val githubTrendingRestClient: RestClient
 ) {
     companion object {
-        private const val TRENDING_BASE_URL = "https://gtrend.yapie.me"
-        private const val REPOSITORIES_PATH = "/repositories"
+        private const val TRENDING_BASE_URL = "https://n8n.miensoap.me/webhook/trending"
     }
 
-    fun getTrendingRepositories(period: String): List<TrendingRepositoryApiResponse> {
-        val url = "$TRENDING_BASE_URL$REPOSITORIES_PATH?since=$period"
+    fun dailyTrendingRepositories(): List<TrendingRepositoryApiResponse> {
+        val url = TRENDING_BASE_URL
         return try {
             githubTrendingRestClient
                 .get()
@@ -29,7 +28,4 @@ class GithubTrendingApiService(
             emptyList()
         }
     }
-
-    val dailyTrendingRepositories: List<TrendingRepositoryApiResponse>
-        get() = getTrendingRepositories("daily")
 }
